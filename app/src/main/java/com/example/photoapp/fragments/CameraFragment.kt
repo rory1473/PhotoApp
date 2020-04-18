@@ -2,6 +2,7 @@ package com.example.photoapp.fragments
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -19,6 +20,7 @@ import kotlinx.android.synthetic.main.fragment_camera.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.ByteArrayOutputStream
 
 
 class CameraFragment : Fragment() {
@@ -46,12 +48,17 @@ class CameraFragment : Fragment() {
 
 
 
-private fun takePhoto(){
-    val newPhoto = fotoapparat!!.takePicture()
-    val photo = newPhoto.toBitmap().await()
-    listener?.photoInterface(photo)
+    private fun takePhoto(){
+        val newPhoto = fotoapparat!!.takePicture()
+        val photo = newPhoto.toBitmap().await()
+        val bitmap = photo.bitmap
+        val stream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream)
+        val image = stream.toByteArray()
 
-}
+        listener?.photoInterface(image)
+
+    }
 
 
 
@@ -102,7 +109,7 @@ private fun takePhoto(){
 
 
     interface CameraFragmentListener {
-        fun photoInterface(newPhoto: BitmapPhoto)
+        fun photoInterface(newPhoto: ByteArray)
 
     }
 

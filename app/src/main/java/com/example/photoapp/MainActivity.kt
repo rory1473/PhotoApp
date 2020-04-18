@@ -8,6 +8,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.TextView
 import android.widget.Toast
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import com.example.photoapp.datahandling.Photo
 import com.example.photoapp.datahandling.PhotoDatabase
@@ -33,7 +34,7 @@ class MainActivity : AppCompatActivity(), MapFragment.OnFragmentInteractionListe
         textMessage = findViewById(R.id.message)
         navView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
 
-        showPhotoFragment()
+        //showPhotoFragment()
     }
 
 
@@ -55,8 +56,10 @@ class MainActivity : AppCompatActivity(), MapFragment.OnFragmentInteractionListe
 
 
     private fun showPhotoFragment() {
-        val transaction = fm.beginTransaction()
+
         val fragment = PhotoFragment.newInstance()
+       //fragment.getPhotos(photo)
+        val transaction = fm.beginTransaction()
         transaction.replace(R.id.page_fragment, fragment)
         transaction.addToBackStack(null)
         transaction.commit()
@@ -74,10 +77,10 @@ class MainActivity : AppCompatActivity(), MapFragment.OnFragmentInteractionListe
 
 
 
-    override fun photoInterface(newPhoto: BitmapPhoto){
+    override fun photoInterface(newPhoto: ByteArray){
         lifecycleScope.launch {
             var photoID = 0L
-            val newImage = Photo(image= newPhoto, album = 0)
+            val newImage = Photo(image= newPhoto)
             withContext(Dispatchers.IO) {
                 photoID = db.photoDAO().insert(newImage)
             }

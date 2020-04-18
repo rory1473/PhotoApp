@@ -10,17 +10,28 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+        <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="414dp"
+                android:layout_height="735dp"
+                android:id="@+id/recyclerView"
+                app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" app:layout_constraintHorizontal_bias="0.666"/>
 
-
-        <Button
-                android:text="Button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/btn1"
-                app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="160dp"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                app:fabSize="normal"
+                android:src="@drawable/ic_camera_alt_black_24dp"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="32dp"
+                android:layout_centerHorizontal="true"
+                app:backgroundTint="@android:color/white"
+                app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
                 android:layout_marginBottom="68dp" app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"
-                app:layout_constraintHorizontal_bias="0.987"/>
+                app:layout_constraintHorizontal_bias="0.498"/>
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,8 +5,8 @@ import androidx.room.*
 @Dao
 interface PhotoDAO {
 
-    @Query("SELECT * FROM images WHERE id=:id")
-    fun getImageById(id: Long): Photo?
+    //@Query("SELECT * FROM images WHERE id=:id")
+    //fun getImageById(id: Long): Photo?
 
     @Query("SELECT * FROM images")
     fun getAllImages(): List<Photo>
