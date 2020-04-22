@@ -4,12 +4,14 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
+import androidx.room.Database
 import com.example.photoapp.datahandling.Photo
 import com.example.photoapp.datahandling.PhotoDatabase
 import com.example.photoapp.fragments.CameraFragment
@@ -23,18 +25,20 @@ import kotlinx.coroutines.withContext
 class MainActivity : AppCompatActivity(), MapFragment.OnFragmentInteractionListener, PhotoFragment.OnFragmentInteractionListener, CameraFragment.CameraFragmentListener  {
 
     private val fm = supportFragmentManager
-    private lateinit var textMessage: TextView
-    private val db = PhotoDatabase.getDatabase(application)
+
+    private lateinit var db: PhotoDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
 
-        textMessage = findViewById(R.id.message)
+         db = PhotoDatabase.getDatabase(application)
+
+
         navView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
 
-        //showPhotoFragment()
+        showCameraFragment()
     }
 
 
@@ -58,7 +62,6 @@ class MainActivity : AppCompatActivity(), MapFragment.OnFragmentInteractionListe
     private fun showPhotoFragment() {
 
         val fragment = PhotoFragment.newInstance()
-       //fragment.getPhotos(photo)
         val transaction = fm.beginTransaction()
         transaction.replace(R.id.page_fragment, fragment)
         transaction.addToBackStack(null)
@@ -75,11 +78,19 @@ class MainActivity : AppCompatActivity(), MapFragment.OnFragmentInteractionListe
 
     }
 
+    private fun showCameraFragment() {
+        val transaction = fm.beginTransaction()
+        val fragment = CameraFragment.newInstance()
+        transaction.replace(R.id.page_fragment, fragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
 
+    }
 
     override fun photoInterface(newPhoto: ByteArray){
+        Log.i("CCCCCCC", newPhoto.toString())
         lifecycleScope.launch {
-            var photoID = 0L
+            var photoID: Long? = null
             val newImage = Photo(image= newPhoto)
             withContext(Dispatchers.IO) {
                 photoID = db.photoDAO().insert(newImage)

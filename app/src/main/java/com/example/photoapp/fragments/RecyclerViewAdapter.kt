@@ -3,6 +3,8 @@ package com.example.photoapp.fragments
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,14 +23,14 @@ class RecyclerViewAdapter(private val c: Context, private val images: List<Photo
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
 
        lateinit var bitmap: Bitmap
-       for(i in images){
+       //for(i in images){
            val getImage = images[position].image
            bitmap = BitmapFactory.decodeByteArray(getImage, 0, getImage.size)
+           bitmap.rotate(90.toFloat())
+       //}
 
-       }
 
-        //val path = images[position]
-        holder.imageView.setImageBitmap(bitmap)
+        holder.imageView.setImageBitmap(Bitmap.createScaledBitmap(bitmap, 10,10, false))
 
         //holder.imageView.setOnClickListener{}
     }
@@ -38,11 +40,20 @@ class RecyclerViewAdapter(private val c: Context, private val images: List<Photo
         return images.size
     }
 
-class MyViewHolder(view: View): RecyclerView.ViewHolder(view) {
+    class MyViewHolder(view: View): RecyclerView.ViewHolder(view) {
 
-    val imageView = view.findViewById(R.id.imageView) as ImageView
+        val imageView = view.findViewById(R.id.imageView) as ImageView
 
+    }
+
+    fun Bitmap.rotate(degrees: Float): Bitmap {
+        val matrix = Matrix().apply { postRotate(degrees) }
+        return Bitmap.createBitmap(this, 0, 0, width, height, matrix, true)
+    }
 }
 
 
-}
+
+
+
+

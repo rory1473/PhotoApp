@@ -2,9 +2,12 @@ package com.example.photoapp.fragments
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -21,6 +24,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
+
+import android.widget.ImageView
+
+import java.io.File
 
 
 class CameraFragment : Fragment() {
@@ -49,14 +56,22 @@ class CameraFragment : Fragment() {
 
 
     private fun takePhoto(){
-        val newPhoto = fotoapparat!!.takePicture()
-        val photo = newPhoto.toBitmap().await()
-        val bitmap = photo.bitmap
+        val filename = "newPhoto.jpg"
+        val sd = Environment.getExternalStorageDirectory()
+        val dest = File(sd, filename)
+
+        fotoapparat?.takePicture()?.saveToFile(dest)
+
+        val path = File(Environment.getExternalStorageDirectory(),"newPhoto.jpg").toString()
+        Log.i("BBBBBBB", path)
+        val bitmap = BitmapFactory.decodeFile(path)
         val stream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 20, stream)
         val image = stream.toByteArray()
 
         listener?.photoInterface(image)
+        Log.i("AAAAAAA", image.toString())
+
 
     }
 

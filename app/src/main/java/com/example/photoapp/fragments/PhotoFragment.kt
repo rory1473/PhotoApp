@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.photoapp.R
 import com.example.photoapp.datahandling.Photo
@@ -27,28 +28,16 @@ import kotlinx.coroutines.withContext
 class PhotoFragment : Fragment(){
 
     private var listener: OnFragmentInteractionListener? = null
-    lateinit var imageList: List<Photo>
-    private val db = PhotoDatabase.getDatabase(context!!)
-
+    //var imageList: List<Photo> = emptyList()
+    private var imageList = listOf<Photo>()
+    //lateinit var imageList : List<Photo>
+    private lateinit var db: PhotoDatabase
+    lateinit var recyclerView: RecyclerView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val fragView = inflater.inflate(R.layout.fragment_photo, container, false)
 
-        lifecycleScope.launch {
-            withContext(Dispatchers.IO) {
-                imageList = db.photoDAO().getAllImages()
-            }
-        }
-
-        val recyclerView =  fragView.findViewById(R.id.recyclerView) as RecyclerView
-
-        val layoutManager = GridLayoutManager(activity, 2) as RecyclerView.LayoutManager
-        recyclerView.layoutManager = layoutManager
-
-        val recyclerViewAdapter = RecyclerViewAdapter(context!!, imageList)
-        recyclerView.adapter = recyclerViewAdapter
-
-
+        recyclerView =  fragView.findViewById(R.id.recyclerView) as RecyclerView
 
         val btn1 = fragView.findViewById(R.id.btn1) as FloatingActionButton
         btn1.setOnClickListener{
@@ -63,6 +52,27 @@ class PhotoFragment : Fragment(){
     }
 
 
+
+
+    override fun onActivityCreated(savedInstanceState: Bundle?){
+        super.onActivityCreated(savedInstanceState)
+
+        val activity1 = activity as Context
+
+        db = PhotoDatabase.getDatabase(activity1)
+
+        lifecycleScope.launch {
+            withContext(Dispatchers.IO) {
+                imageList = db.photoDAO().getAllImages()
+            }
+        }
+        Log.i("DDDDDD",imageList.toString())
+
+        val layoutManager = GridLayoutManager(context!!, 2) as RecyclerView.LayoutManager
+        recyclerView.layoutManager = layoutManager    //LinearLayoutManager(activity1)
+        val recyclerViewAdapter = RecyclerViewAdapter(context!!,imageList)
+        recyclerView.adapter = recyclerViewAdapter
+    }
 
 
     //fun getPhotos(photos: List<Photo>){
