@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context=".fragments.PhotoFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <TextView
+                android:id="@+id/all_albums"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:padding="10dp"
+                android:text="All Photos"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                android:background="@drawable/album_back"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+
+        <TextView
+                android:id="@+id/album_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Albums"
+                android:textSize="38sp"
+                android:textStyle="bold"
+                android:textColor="#A9A9A9"
+                android:layout_margin="25dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/all_albums"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/recyclerView"
+                app:layout_constraintTop_toBottomOf="@id/album_text"
+                app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+                />
+
+
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/add_album_btn"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                app:fabSize="normal"
+                android:src="@drawable/ic_add_black_50dp"
+                android:layout_margin="32dp"
+                app:backgroundTint="@android:color/white"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/camera_btn"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                app:fabSize="normal"
+                android:src="@drawable/ic_camera_alt_black_50dp"
+                android:layout_margin="32dp"
+                app:backgroundTint="@android:color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginEnd="32dp"
+
+                />
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</FrameLayout>

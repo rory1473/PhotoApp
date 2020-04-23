@@ -15,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.room.Database
 import com.example.photoapp.datahandling.Photo
 import com.example.photoapp.datahandling.PhotoDatabase
+import com.example.photoapp.fragments.AlbumFragment
 import com.example.photoapp.fragments.CameraFragment
 import com.example.photoapp.fragments.MapFragment
 import com.example.photoapp.fragments.PhotoFragment
@@ -24,7 +25,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 
-class MainActivity : AppCompatActivity(), MapFragment.OnFragmentInteractionListener, PhotoFragment.OnFragmentInteractionListener, CameraFragment.CameraFragmentListener  {
+class MainActivity : AppCompatActivity(), AlbumFragment.OnFragmentInteractionListener, MapFragment.OnFragmentInteractionListener, PhotoFragment.OnFragmentInteractionListener, CameraFragment.CameraFragmentListener  {
 
     private val fm = supportFragmentManager
 
@@ -51,7 +52,7 @@ class MainActivity : AppCompatActivity(), MapFragment.OnFragmentInteractionListe
     private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_photos -> {
-                showPhotoFragment()
+                showAlbumFragment()
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_map -> {
@@ -92,11 +93,20 @@ class MainActivity : AppCompatActivity(), MapFragment.OnFragmentInteractionListe
 
     }
 
+    private fun showAlbumFragment() {
+        val transaction = fm.beginTransaction()
+        val fragment = AlbumFragment.newInstance()
+        transaction.replace(R.id.page_fragment, fragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
+
+    }
+
     override fun photoInterface(newPhoto: String){
         Log.i("CCCCCCC", newPhoto)
         lifecycleScope.launch {
             var photoID: Long? = null
-            val newImage = Photo(image= newPhoto)
+            val newImage = Photo(image= newPhoto, album = 0)
             withContext(Dispatchers.IO) {
                 photoID = db.photoDAO().insert(newImage)
             }

@@ -28,14 +28,17 @@ import kotlinx.coroutines.withContext
 class PhotoFragment : Fragment(){
 
     private var listener: OnFragmentInteractionListener? = null
-    //var imageList: List<Photo> = emptyList()
     private var imageList = listOf<Photo>()
-    //lateinit var imageList : List<Photo>
     private lateinit var db: PhotoDatabase
     lateinit var recyclerView: RecyclerView
+    var allPhotos = true
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val fragView = inflater.inflate(R.layout.fragment_photo, container, false)
+
+        val arg = arguments
+        allPhotos = arg!!.getBoolean("allPhotos")
 
         recyclerView =  fragView.findViewById(R.id.recyclerView) as RecyclerView
 
@@ -61,27 +64,46 @@ class PhotoFragment : Fragment(){
 
         db = PhotoDatabase.getDatabase(activity1)
 
-        lifecycleScope.launch {
-            withContext(Dispatchers.IO) {
-                imageList = db.photoDAO().getAllImages()
+        if (allPhotos) {
+
+            lifecycleScope.launch {
+                withContext(Dispatchers.IO) {
+                    imageList = db.photoDAO().getAllImages()
+                }
+
+                Log.i("DDDDDD", imageList.toString())
+                val layoutManager = GridLayoutManager(context!!, 2)
+                recyclerView.layoutManager = layoutManager     //LinearLayoutManager(activity1)
+                val recyclerViewAdapter = RecyclerViewAdapter(context!!, imageList)
+                recyclerView.adapter = recyclerViewAdapter
+                recyclerView.addItemDecoration(SpacesItemDecoration(0))
             }
 
-            Log.i("DDDDDD",imageList.toString())
-            val layoutManager = GridLayoutManager(context!!, 2) as RecyclerView.LayoutManager
-            recyclerView.layoutManager = layoutManager     //LinearLayoutManager(activity1)
-            val recyclerViewAdapter = RecyclerViewAdapter(context!!,imageList)
-            recyclerView.adapter = recyclerViewAdapter
+        } else{
+            val arg = arguments
+            val albumID = arg!!.getInt("ID")
+
+            lifecycleScope.launch {
+                withContext(Dispatchers.IO) {
+                    imageList = db.photoDAO().getImageByAlbum(albumID)
+                }
+
+                Log.i("DDDDDD", imageList.toString())
+                val layoutManager = GridLayoutManager(context!!, 2)
+                recyclerView.layoutManager = layoutManager     //LinearLayoutManager(activity1)
+                val recyclerViewAdapter = RecyclerViewAdapter(context!!, imageList)
+                recyclerView.adapter = recyclerViewAdapter
+                recyclerView.addItemDecoration(SpacesItemDecoration(0))
+            }
         }
-
-
 
 
     }
 
 
-    //fun getPhotos(photos: List<Photo>){
-       // imageList = photos
-       // Log.i("array", imageList.toString())
+    //fun getAlbum(photos: Boolean){
+       // allPhotos = photos
+    // }
     //
 
 
