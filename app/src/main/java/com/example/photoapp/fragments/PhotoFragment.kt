@@ -65,13 +65,17 @@ class PhotoFragment : Fragment(){
             withContext(Dispatchers.IO) {
                 imageList = db.photoDAO().getAllImages()
             }
-        }
-        Log.i("DDDDDD",imageList.toString())
 
-        val layoutManager = GridLayoutManager(context!!, 2) as RecyclerView.LayoutManager
-        recyclerView.layoutManager = layoutManager    //LinearLayoutManager(activity1)
-        val recyclerViewAdapter = RecyclerViewAdapter(context!!,imageList)
-        recyclerView.adapter = recyclerViewAdapter
+            Log.i("DDDDDD",imageList.toString())
+            val layoutManager = GridLayoutManager(context!!, 2) as RecyclerView.LayoutManager
+            recyclerView.layoutManager = layoutManager     //LinearLayoutManager(activity1)
+            val recyclerViewAdapter = RecyclerViewAdapter(context!!,imageList)
+            recyclerView.adapter = recyclerViewAdapter
+        }
+
+
+
+
     }
 
 

@@ -9,7 +9,7 @@ import io.fotoapparat.result.BitmapPhoto
 
 @Entity(tableName="images")
 
-data class Photo(@PrimaryKey(autoGenerate = true) val id: Int = 0,  val image: ByteArray)
+data class Photo(@PrimaryKey(autoGenerate = true) val id: Int = 0,  val image: String)
 
 
 

@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
@@ -21,6 +22,7 @@ import io.fotoapparat.result.BitmapPhoto
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 
 class MainActivity : AppCompatActivity(), MapFragment.OnFragmentInteractionListener, PhotoFragment.OnFragmentInteractionListener, CameraFragment.CameraFragmentListener  {
 
@@ -32,6 +34,9 @@ class MainActivity : AppCompatActivity(), MapFragment.OnFragmentInteractionListe
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
+
+        val path = File(Environment.getExternalStorageDirectory().toString()+"/images")
+        path.mkdirs()
 
          db = PhotoDatabase.getDatabase(application)
 
@@ -87,8 +92,8 @@ class MainActivity : AppCompatActivity(), MapFragment.OnFragmentInteractionListe
 
     }
 
-    override fun photoInterface(newPhoto: ByteArray){
-        Log.i("CCCCCCC", newPhoto.toString())
+    override fun photoInterface(newPhoto: String){
+        Log.i("CCCCCCC", newPhoto)
         lifecycleScope.launch {
             var photoID: Long? = null
             val newImage = Photo(image= newPhoto)

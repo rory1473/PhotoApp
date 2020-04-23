@@ -56,21 +56,28 @@ class CameraFragment : Fragment() {
 
 
     private fun takePhoto(){
-        val filename = "newPhoto.jpg"
-        val sd = Environment.getExternalStorageDirectory()
+
+        val stringLibrary = ('a'..'z').toList().toTypedArray()
+        val random = (1..6).map { stringLibrary.random() }.joinToString("")
+
+        val filename = random+".png"
+        val sd = Environment.getExternalStorageDirectory().toString()+"/images/"
         val dest = File(sd, filename)
 
         fotoapparat?.takePicture()?.saveToFile(dest)
 
-        val path = File(Environment.getExternalStorageDirectory(),"newPhoto.jpg").toString()
-        Log.i("BBBBBBB", path)
-        val bitmap = BitmapFactory.decodeFile(path)
-        val stream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 20, stream)
-        val image = stream.toByteArray()
 
-        listener?.photoInterface(image)
-        Log.i("AAAAAAA", image.toString())
+
+
+        //val path = File(Environment.getExternalStorageDirectory(),"newPhoto.jpg").toString()
+       // Log.i("BBBBBBB", path)
+        //val bitmap = BitmapFactory.decodeFile(path)
+        //val stream = ByteArrayOutputStream()
+        //bitmap.compress(Bitmap.CompressFormat.JPEG, 20, stream)
+        //val image = stream.toByteArray()
+
+        listener?.photoInterface(random)
+        Log.i("AAAAAAA", random)
 
 
     }
@@ -124,7 +131,7 @@ class CameraFragment : Fragment() {
 
 
     interface CameraFragmentListener {
-        fun photoInterface(newPhoto: ByteArray)
+        fun photoInterface(newPhoto: String) //ByteArray
 
     }
 
