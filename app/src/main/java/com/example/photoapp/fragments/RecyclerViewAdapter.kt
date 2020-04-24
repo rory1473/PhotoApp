@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import android.os.Bundle
 import android.os.Environment
 import android.util.Log
 
@@ -11,9 +12,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.photoapp.R
 import com.example.photoapp.datahandling.Photo
+import java.io.ByteArrayOutputStream
 import java.io.File
 
 
@@ -25,22 +28,37 @@ class RecyclerViewAdapter(private val c: Context, private val images: List<Photo
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
 
-       lateinit var bitmap: Bitmap
-
-           val getImage = images[position].image
+        val getImage = images[position].image+".jpg"
            //bitmap = BitmapFactory.decodeByteArray(getImage, 0, getImage.size)
-          // bitmap.rotate(90.toFloat())
+        val path = File(Environment.getExternalStorageDirectory().toString()+"/images/", getImage)
 
-
-        val path = File(Environment.getExternalStorageDirectory().toString()+"/images/", getImage+".png")
-
-        bitmap = BitmapFactory.decodeFile(path.absolutePath)
+        val bitmap = BitmapFactory.decodeFile(path.absolutePath)
         bitmap.rotate(90.toFloat())
 
+        //val bitmapCompress = bitmap
+        //val stream = ByteArrayOutputStream()
+       // bitmapCompress.compress(Bitmap.CompressFormat.JPEG, 20, stream)
+        //val imageStream = stream.toByteArray()
+        //val image = BitmapFactory.decodeByteArray(imageStream, 0, imageStream.size)
         holder.imageView.setImageBitmap(Bitmap.createScaledBitmap(bitmap, 200,200, false))
         Log.i("FILE", getImage)
-        //holder.imageView.setOnClickListener{}
+
+        holder.imageView.setOnClickListener{
+
+            val imageFragment = ImageFragment()
+            val args = Bundle()
+            args.putString("image", getImage)
+            imageFragment.arguments = args
+            val transaction = (holder.itemView.context as FragmentActivity).supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.page_fragment, imageFragment)
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
     }
+
+
+
+
 
 
     override fun getItemCount(): Int {

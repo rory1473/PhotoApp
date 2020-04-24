@@ -15,17 +15,14 @@ import androidx.lifecycle.lifecycleScope
 import androidx.room.Database
 import com.example.photoapp.datahandling.Photo
 import com.example.photoapp.datahandling.PhotoDatabase
-import com.example.photoapp.fragments.AlbumFragment
-import com.example.photoapp.fragments.CameraFragment
-import com.example.photoapp.fragments.MapFragment
-import com.example.photoapp.fragments.PhotoFragment
+import com.example.photoapp.fragments.*
 import io.fotoapparat.result.BitmapPhoto
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 
-class MainActivity : AppCompatActivity(), AlbumFragment.OnFragmentInteractionListener, MapFragment.OnFragmentInteractionListener, PhotoFragment.OnFragmentInteractionListener, CameraFragment.CameraFragmentListener  {
+class MainActivity : AppCompatActivity(), ImageFragment.OnFragmentInteractionListener, AlbumFragment.OnFragmentInteractionListener, MapFragment.OnFragmentInteractionListener, PhotoFragment.OnFragmentInteractionListener, CameraFragment.CameraFragmentListener  {
 
     private val fm = supportFragmentManager
 
@@ -34,6 +31,7 @@ class MainActivity : AppCompatActivity(), AlbumFragment.OnFragmentInteractionLis
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        supportActionBar!!.hide()
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
 
         val path = File(Environment.getExternalStorageDirectory().toString()+"/images")

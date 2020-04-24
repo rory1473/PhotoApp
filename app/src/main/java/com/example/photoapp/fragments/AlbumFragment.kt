@@ -121,7 +121,7 @@ class AlbumFragment : Fragment(){
 
             Log.i("DDDDDD",albumList.toString())
             recyclerView.layoutManager = LinearLayoutManager(activity1)
-            val recyclerViewAdapter = AlbumRecyclerViewAdapter(activity!!, context!!,albumList)
+            val recyclerViewAdapter = AlbumRecyclerViewAdapter(context!!,albumList)
             recyclerView.adapter = recyclerViewAdapter
 
         }

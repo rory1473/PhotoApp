@@ -15,17 +15,22 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.photoapp.R
 import com.example.photoapp.datahandling.Album
 import com.example.photoapp.datahandling.Photo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
+import androidx.lifecycle.lifecycleScope
 
 
-class AlbumRecyclerViewAdapter(private val c: Context, private val albums: List<Album>): RecyclerView.Adapter<AlbumRecyclerViewAdapter.MyViewHolder>(){
+class MoveRecyclerViewAdapter(private val c: Context, private val albums: List<Album>): RecyclerView.Adapter<MoveRecyclerViewAdapter.MyViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        return MyViewHolder(LayoutInflater.from(c).inflate(R.layout.single_album, parent, false))
+        return MyViewHolder(LayoutInflater.from(c).inflate(R.layout.single_move, parent, false))
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
@@ -34,17 +39,14 @@ class AlbumRecyclerViewAdapter(private val c: Context, private val albums: List<
         holder.textView.text = getAlbum
         Log.i("Album", getAlbum)
 
-        holder.textView.setOnClickListener{
-            val photos = false
-            val photoFragment = PhotoFragment()
-            val args = Bundle()
-            args.putInt("ID", albums[position].id)
-            args.putBoolean("allPhotos", photos)
-            photoFragment.arguments = args
-            val transaction = (holder.itemView.context as FragmentActivity).supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.page_fragment, photoFragment)
-            transaction.addToBackStack(null)
-            transaction.commit()}
+        holder.textView.setOnClickListener {
+            //lifecycleScope.launch {
+            //var albumID: Long? = null
+            //val newAlbum = Album(name= album)
+            //   withContext(Dispatchers.IO) {
+            //albumID = db.photoDAO().insertAlbum(newAlbum)
+
+        }
     }
 
 
@@ -52,7 +54,7 @@ class AlbumRecyclerViewAdapter(private val c: Context, private val albums: List<
         return albums.size
     }
 
-    class MyViewHolder(view: View): RecyclerView.ViewHolder(view) {
+    class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         val textView = view.findViewById(R.id.textView) as TextView
 
