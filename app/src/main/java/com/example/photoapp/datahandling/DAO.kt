@@ -1,15 +1,20 @@
 package com.example.photoapp.datahandling
 
+
+import androidx.lifecycle.LiveData
 import androidx.room.*
 
 @Dao
 interface PhotoDAO {
 
     @Query("SELECT * FROM images WHERE album=:album")
-    fun getImageByAlbum(album: Int): List<Photo>
+    fun getImageByAlbum(album: Int): LiveData<List<Photo>>
+
+    @Query("SELECT * FROM images WHERE id=:id")
+    fun getImageByID(id: Int): Photo?
 
     @Query("SELECT * FROM images")
-    fun getAllImages(): List<Photo>
+    fun getAllImages(): LiveData<List<Photo>>
 
     @Insert
     fun insert(images: Photo) : Long
@@ -24,6 +29,9 @@ interface PhotoDAO {
 
     @Query("SELECT * FROM albums")
     fun getAllAlbums(): List<Album>
+
+    @Query("SELECT * FROM albums")
+    fun getAllAlbumsLive(): LiveData<List<Album>>
 
     @Insert
     fun insertAlbum(albums: Album) : Long

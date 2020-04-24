@@ -1,7 +1,6 @@
 package com.example.photoapp.fragments
 
 import android.content.Context
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -9,15 +8,20 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.photoapp.R
+import com.example.photoapp.adapters.AlbumRecyclerViewAdapter
+import com.example.photoapp.adapters.PhotoRecyclerViewAdapter
+import com.example.photoapp.adapters.ViewModel
+import com.example.photoapp.datahandling.Album
 import com.example.photoapp.datahandling.Photo
-import com.example.photoapp.datahandling.PhotoDAO
 import com.example.photoapp.datahandling.PhotoDatabase
-import com.example.photoapp.datahandling.PhotoDatabase.Companion.getDatabase
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -31,6 +35,7 @@ class PhotoFragment : Fragment(){
     private var imageList = listOf<Photo>()
     private lateinit var db: PhotoDatabase
     lateinit var recyclerView: RecyclerView
+    lateinit var title: TextView
     var allPhotos = true
 
 
@@ -41,6 +46,10 @@ class PhotoFragment : Fragment(){
         allPhotos = arg!!.getBoolean("allPhotos")
 
         recyclerView =  fragView.findViewById(R.id.recyclerView) as RecyclerView
+
+
+            title =  fragView.findViewById(R.id.title) as TextView
+
 
         val btn1 = fragView.findViewById(R.id.btn1) as FloatingActionButton
         btn1.setOnClickListener{
@@ -65,38 +74,65 @@ class PhotoFragment : Fragment(){
         db = PhotoDatabase.getDatabase(activity1)
 
         if (allPhotos) {
+            title.text = "All Photos"
 
-            lifecycleScope.launch {
-                withContext(Dispatchers.IO) {
-                    imageList = db.photoDAO().getAllImages()
-                }
+            val viewModel = ViewModelProviders.of(activity!!).get(ViewModel::class.java)
+
+            viewModel.getAllImages().observe(this, Observer<List<Photo>> {
+                imageList = it
 
                 Log.i("DDDDDD", imageList.toString())
                 val layoutManager = GridLayoutManager(context!!, 2)
                 recyclerView.layoutManager = layoutManager     //LinearLayoutManager(activity1)
-                val recyclerViewAdapter = RecyclerViewAdapter(context!!, imageList)
+                val recyclerViewAdapter = PhotoRecyclerViewAdapter(context!!, imageList)
                 recyclerView.adapter = recyclerViewAdapter
-                recyclerView.addItemDecoration(SpacesItemDecoration(0))
-            }
 
-        } else{
+            })
+
+            //lifecycleScope.launch {
+             //   withContext(Dispatchers.IO) {
+             //       imageList = db.photoDAO().getAllImages()
+             //   }
+
+             //   Log.i("DDDDDD", imageList.toString())
+              //  val layoutManager = GridLayoutManager(context!!, 2)
+              //  recyclerView.layoutManager = layoutManager     //LinearLayoutManager(activity1)
+              //  val recyclerViewAdapter = PhotoRecyclerViewAdapter(context!!, imageList)
+              //  recyclerView.adapter = recyclerViewAdapter
+
+
+
+       } else{
             val arg = arguments
             val albumID = arg!!.getInt("ID")
+            val albumName = arg.getString("name")
+            title.text = albumName
 
-            lifecycleScope.launch {
-                withContext(Dispatchers.IO) {
-                    imageList = db.photoDAO().getImageByAlbum(albumID)
-                }
+            val viewModel = ViewModelProviders.of(activity!!).get(ViewModel::class.java)
+
+            viewModel.getImageByAlbum(albumID).observe(this, Observer<List<Photo>> {
+                imageList = it
 
                 Log.i("DDDDDD", imageList.toString())
                 val layoutManager = GridLayoutManager(context!!, 2)
-                recyclerView.layoutManager = layoutManager     //LinearLayoutManager(activity1)
-                val recyclerViewAdapter = RecyclerViewAdapter(context!!, imageList)
+                recyclerView.layoutManager = layoutManager
+                val recyclerViewAdapter = PhotoRecyclerViewAdapter(context!!, imageList)
                 recyclerView.adapter = recyclerViewAdapter
-                recyclerView.addItemDecoration(SpacesItemDecoration(0))
-            }
-        }
 
+        //    lifecycleScope.launch {
+        //        withContext(Dispatchers.IO) {
+        //            imageList = db.photoDAO().getImageByAlbum(albumID)
+         //       }
+//
+        //        Log.i("DDDDDD", imageList.toString())
+        //        val layoutManager = GridLayoutManager(context!!, 2)
+        //        recyclerView.layoutManager = layoutManager     //LinearLayoutManager(activity1)
+        //        val recyclerViewAdapter = PhotoRecyclerViewAdapter(context!!, imageList)
+        //        recyclerView.adapter = recyclerViewAdapter
+//
+         //   }
+        })
+        }
 
     }
 

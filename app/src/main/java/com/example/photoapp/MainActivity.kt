@@ -8,15 +8,11 @@ import android.os.Environment
 import android.util.Log
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
-import android.widget.TextView
 import android.widget.Toast
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
-import androidx.room.Database
 import com.example.photoapp.datahandling.Photo
 import com.example.photoapp.datahandling.PhotoDatabase
 import com.example.photoapp.fragments.*
-import io.fotoapparat.result.BitmapPhoto
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -42,7 +38,7 @@ class MainActivity : AppCompatActivity(), ImageFragment.OnFragmentInteractionLis
 
         navView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
 
-        showCameraFragment()
+        showAlbumFragment()
     }
 
 
@@ -152,7 +148,7 @@ class MainActivity : AppCompatActivity(), ImageFragment.OnFragmentInteractionLis
                     getPermissions()
 
                 } else {
-                    Toast.makeText(this, "Camera, file read and file write permissions required to use this app", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Camera, file read and file write permissions required to use this app", Toast.LENGTH_LONG).show()
                 }
             }
         }

@@ -9,26 +9,25 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.photoapp.R
 import com.example.photoapp.datahandling.Album
-import com.example.photoapp.datahandling.Photo
 import com.example.photoapp.datahandling.PhotoDatabase
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import android.content.DialogInterface
-import android.text.Editable
-import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import com.example.photoapp.adapters.AlbumRecyclerViewAdapter
+import com.example.photoapp.adapters.ViewModel
 import kotlinx.android.synthetic.main.add_album.view.*
 
 
-class AlbumFragment : Fragment(){
+class AlbumFragment() : Fragment(){
 
     private var listener: OnFragmentInteractionListener? = null
     private var albumList = listOf<Album>()
@@ -114,24 +113,25 @@ class AlbumFragment : Fragment(){
 
         db = PhotoDatabase.getDatabase(activity1)
 
-        lifecycleScope.launch {
-            withContext(Dispatchers.IO) {
-                albumList = db.photoDAO().getAllAlbums()
-            }
+        val viewModel = ViewModelProviders.of(activity!!).get(ViewModel::class.java)
+
+        viewModel.getAllAlbumsLive().observe(this, Observer<List<Album>> {
+            albumList = it
 
             Log.i("DDDDDD",albumList.toString())
             recyclerView.layoutManager = LinearLayoutManager(activity1)
-            val recyclerViewAdapter = AlbumRecyclerViewAdapter(context!!,albumList)
+            val recyclerViewAdapter = AlbumRecyclerViewAdapter(context!!, albumList)
             recyclerView.adapter = recyclerViewAdapter
-
-        }
-
+        })
 
 
+        //lifecycleScope.launch {
+        //    withContext(Dispatchers.IO) {
+        //        albumList = db.photoDAO().getAllAlbums()
+        //    }
+        //}
 
     }
-
-
 
 
 

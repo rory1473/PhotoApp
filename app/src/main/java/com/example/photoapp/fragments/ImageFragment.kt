@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,15 +13,14 @@ import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.photoapp.R
+import com.example.photoapp.adapters.MoveRecyclerViewAdapter
 import com.example.photoapp.datahandling.Album
-import com.example.photoapp.datahandling.Photo
 import com.example.photoapp.datahandling.PhotoDatabase
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import kotlinx.android.synthetic.main.add_album.view.*
+import kotlinx.android.synthetic.main.move_image.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -43,6 +41,8 @@ class ImageFragment : Fragment(){
 
         val arg = arguments
         val getImage = arg!!.getString("image")
+        val getImageID = arg!!.getInt("imageID")
+
 
         val path = File(Environment.getExternalStorageDirectory().toString()+"/images/", getImage)
         val bitmap = BitmapFactory.decodeFile(path.absolutePath)
@@ -50,14 +50,7 @@ class ImageFragment : Fragment(){
         val imageView = fragView.findViewById(R.id.imageFull) as ImageView
         imageView.setImageBitmap(Bitmap.createScaledBitmap(bitmap, 200,200, false))
 
-        val backBtn = fragView.findViewById(R.id.backBtn) as FloatingActionButton
-        backBtn.setOnClickListener{
-            val transaction = activity!!.supportFragmentManager.beginTransaction()
-            val fragment = AlbumFragment.newInstance()
-            transaction.replace(R.id.page_fragment, fragment)
-            transaction.addToBackStack(null)
-            transaction.commit()
-        }
+
 
         val moveBtn = fragView.findViewById(R.id.moveBtn) as FloatingActionButton
         moveBtn.setOnClickListener {
@@ -75,13 +68,16 @@ class ImageFragment : Fragment(){
                 }
                 recyclerView =  dialogView.findViewById(R.id.recyclerView) as RecyclerView
                 recyclerView.layoutManager = LinearLayoutManager(activity)
-                val recyclerViewAdapter = MoveRecyclerViewAdapter(context!!, albumList)
+                val recyclerViewAdapter =
+                    MoveRecyclerViewAdapter(getImageID, context!!, albumList)
                 recyclerView.adapter = recyclerViewAdapter
                 val alert = builder.show()
 
-                dialogView.cancel_btn.setOnClickListener {
+                dialogView.cancel_btn1.setOnClickListener {
                     alert.dismiss()
                 }
+
+
 
 
             }

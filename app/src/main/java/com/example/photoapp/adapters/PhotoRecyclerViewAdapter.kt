@@ -1,4 +1,4 @@
-package com.example.photoapp.fragments
+package com.example.photoapp.adapters
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -16,20 +16,27 @@ import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.photoapp.R
 import com.example.photoapp.datahandling.Photo
-import java.io.ByteArrayOutputStream
+import com.example.photoapp.fragments.ImageFragment
 import java.io.File
 
 
-class RecyclerViewAdapter(private val c: Context, private val images: List<Photo>): RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder>(){
+class PhotoRecyclerViewAdapter(private val c: Context, private val images: List<Photo>): RecyclerView.Adapter<PhotoRecyclerViewAdapter.MyViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        return MyViewHolder(LayoutInflater.from(c).inflate(R.layout.single_photo, parent, false))
+        return MyViewHolder(
+            LayoutInflater.from(c).inflate(
+                R.layout.single_photo,
+                parent,
+                false
+            )
+        )
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
 
         val getImage = images[position].image+".jpg"
-           //bitmap = BitmapFactory.decodeByteArray(getImage, 0, getImage.size)
+        val getID = images[position].id
+
         val path = File(Environment.getExternalStorageDirectory().toString()+"/images/", getImage)
 
         val bitmap = BitmapFactory.decodeFile(path.absolutePath)
@@ -48,6 +55,7 @@ class RecyclerViewAdapter(private val c: Context, private val images: List<Photo
             val imageFragment = ImageFragment()
             val args = Bundle()
             args.putString("image", getImage)
+            args.putInt("imageID", getID)
             imageFragment.arguments = args
             val transaction = (holder.itemView.context as FragmentActivity).supportFragmentManager.beginTransaction()
             transaction.replace(R.id.page_fragment, imageFragment)
