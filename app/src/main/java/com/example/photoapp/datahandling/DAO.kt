@@ -14,7 +14,10 @@ interface PhotoDAO {
     fun getImageByID(id: Int): Photo?
 
     @Query("SELECT * FROM images")
-    fun getAllImages(): LiveData<List<Photo>>
+    fun getAllImages(): List<Photo>
+
+    @Query("SELECT * FROM images")
+    fun getAllImagesLive(): LiveData<List<Photo>>
 
     @Insert
     fun insert(images: Photo) : Long

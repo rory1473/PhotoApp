@@ -1,7 +1,11 @@
 package com.example.photoapp
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -18,11 +22,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 
-class MainActivity : AppCompatActivity(), ImageFragment.OnFragmentInteractionListener, AlbumFragment.OnFragmentInteractionListener, MapFragment.OnFragmentInteractionListener, PhotoFragment.OnFragmentInteractionListener, CameraFragment.CameraFragmentListener  {
+class MainActivity : AppCompatActivity(), LocationListener, ImageFragment.OnFragmentInteractionListener, AlbumFragment.OnFragmentInteractionListener, MapFragment.OnFragmentInteractionListener, PhotoFragment.OnFragmentInteractionListener, CameraFragment.CameraFragmentListener  {
 
     private val fm = supportFragmentManager
-
     private lateinit var db: PhotoDatabase
+    var lat = 0.0
+    var long = 0.0
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,7 +106,7 @@ class MainActivity : AppCompatActivity(), ImageFragment.OnFragmentInteractionLis
         Log.i("CCCCCCC", newPhoto)
         lifecycleScope.launch {
             var photoID: Long? = null
-            val newImage = Photo(image= newPhoto, album = 0)
+            val newImage = Photo(image= newPhoto, album = 0, lat = lat, long = long)
             withContext(Dispatchers.IO) {
                 photoID = db.photoDAO().insert(newImage)
             }
@@ -131,11 +137,13 @@ class MainActivity : AppCompatActivity(), ImageFragment.OnFragmentInteractionLis
 
         if(checkSelfPermission(Manifest.permission.CAMERA)== PackageManager.PERMISSION_GRANTED &&
             checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED &&
-            checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED){
-
+            checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED&&
+            checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED){
+            val mgr = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            mgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0f, this)
         }
         else{
-            requestPermissions(arrayOf<String>(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE ), 0)
+            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE ), 0)
         }
     }
 
@@ -144,7 +152,7 @@ class MainActivity : AppCompatActivity(), ImageFragment.OnFragmentInteractionLis
     override fun onRequestPermissionsResult(requestCode:Int, permissions:Array<String>, grantResults: IntArray) {
         when(requestCode) {
             0 -> {
-                if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
+                if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED && grantResults[3] == PackageManager.PERMISSION_GRANTED) {
                     getPermissions()
 
                 } else {
@@ -156,6 +164,34 @@ class MainActivity : AppCompatActivity(), ImageFragment.OnFragmentInteractionLis
     }
 
 
+    override fun onLocationChanged(newLoc: Location) {
+        Log.i("latitude", newLoc.latitude.toString())
+        Log.i("longitude", newLoc.longitude.toString())
+        lat = newLoc.latitude
+        long = newLoc.longitude
+    }
+
+    override fun onProviderDisabled(provider: String) {
+        Toast.makeText(
+            this, "Provider " + provider +
+                    " disabled", Toast.LENGTH_LONG
+        ).show()
+    }
+
+    override fun onProviderEnabled(provider: String) {
+        Toast.makeText(
+            this, "Provider " + provider +
+                    " enabled", Toast.LENGTH_LONG
+        ).show()
+    }
+
+    override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {
+
+        Toast.makeText(
+            this, "Status changed: $status",
+            Toast.LENGTH_LONG
+        ).show()
+    }
 
 
 }

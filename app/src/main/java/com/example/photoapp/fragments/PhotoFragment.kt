@@ -78,7 +78,7 @@ class PhotoFragment : Fragment(){
 
             val viewModel = ViewModelProviders.of(activity!!).get(ViewModel::class.java)
 
-            viewModel.getAllImages().observe(this, Observer<List<Photo>> {
+            viewModel.getAllImagesLive().observe(this, Observer<List<Photo>> {
                 imageList = it
 
                 Log.i("DDDDDD", imageList.toString())

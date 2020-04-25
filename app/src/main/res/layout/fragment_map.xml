@@ -6,10 +6,7 @@
              tools:context=".fragments.MapFragment">
 
 
-    <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/hello_blank_fragment"/>
+
 
     <org.osmdroid.views.MapView
             android:id="@+id/map1"

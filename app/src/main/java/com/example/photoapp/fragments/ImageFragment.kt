@@ -32,7 +32,7 @@ class ImageFragment : Fragment(){
     lateinit var recyclerView: RecyclerView
     private var albumList = listOf<Album>()
     private lateinit var db: PhotoDatabase
-    lateinit var gg: String
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val fragView = inflater.inflate(R.layout.fragment_image, container, false)

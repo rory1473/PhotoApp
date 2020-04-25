@@ -18,7 +18,7 @@ class ViewModel(app: Application): AndroidViewModel(app) {
 
     init {
         albums = db.photoDAO().getAllAlbumsLive()
-        images = db.photoDAO().getAllImages()
+        images = db.photoDAO().getAllImagesLive()
         imageByAlbum = db.photoDAO().getImageByAlbum(id)
     }
 
@@ -30,7 +30,7 @@ class ViewModel(app: Application): AndroidViewModel(app) {
         return albums
     }
 
-    fun getAllImages(): LiveData<List<Photo>> {
+    fun getAllImagesLive(): LiveData<List<Photo>> {
 
         return images
     }

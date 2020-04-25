@@ -23,12 +23,7 @@ import java.io.File
 class PhotoRecyclerViewAdapter(private val c: Context, private val images: List<Photo>): RecyclerView.Adapter<PhotoRecyclerViewAdapter.MyViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        return MyViewHolder(
-            LayoutInflater.from(c).inflate(
-                R.layout.single_photo,
-                parent,
-                false
-            )
+        return MyViewHolder(LayoutInflater.from(c).inflate(R.layout.single_photo, parent, false)
         )
     }
 

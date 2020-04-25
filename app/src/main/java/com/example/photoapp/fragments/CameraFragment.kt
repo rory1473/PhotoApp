@@ -69,12 +69,12 @@ class CameraFragment : Fragment() {
 
 
 
-        val path = File(Environment.getExternalStorageDirectory(),"newPhoto.jpg").toString()
+        //val path = File(Environment.getExternalStorageDirectory(),"newPhoto.jpg").toString()
        // Log.i("BBBBBBB", path)
-        val bitmap = BitmapFactory.decodeFile(path)
-        val stream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 20, stream)
-        val image = stream.toByteArray()
+       // val bitmap = BitmapFactory.decodeFile(path)
+        //val stream = ByteArrayOutputStream()
+        //bitmap.compress(Bitmap.CompressFormat.JPEG, 20, stream)
+        //val image = stream.toByteArray()
 
         listener?.photoInterface(random)
         Log.i("AAAAAAA", random)
