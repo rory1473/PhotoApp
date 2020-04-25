@@ -20,28 +20,9 @@ import org.osmdroid.views.overlay.ItemizedOverlay
 import java.io.File
 
 
-class MapItemOverlay(val imageName: String, val context: Context, activity: Activity,arrayList: ArrayList<OverlayItem>, markerGestureListener: ItemizedIconOverlay.OnItemGestureListener<OverlayItem>): ItemizedIconOverlay<OverlayItem>(activity, arrayList, markerGestureListener)//ItemizedOverlay<OverlayItem>(defaultMarker)//(val activity: Activity, ArrayList<OverlayItem>()){//(defaultMarker, DefaultResourceProxyImpl(mContext))
+class MapItemOverlay(val imageName: String, val context: Context, activity: Activity, markerGestureListener: ItemizedIconOverlay.OnItemGestureListener<OverlayItem>): ItemizedIconOverlay<OverlayItem>(activity, ArrayList<OverlayItem>(), markerGestureListener)//ItemizedOverlay<OverlayItem>(defaultMarker)//(val activity: Activity, ArrayList<OverlayItem>()){//(defaultMarker, DefaultResourceProxyImpl(mContext))
 {
     private val mOverlays = ArrayList<OverlayItem>()
-
-    override fun size(): Int {
-        return mOverlays.size
-    }
-
-    override fun createItem(i: Int): OverlayItem {
-        return mOverlays[i]
-    }
-
-    override fun onSnapToItem(x: Int, y: Int, snapPoint: Point?, mapView: IMapView?): Boolean {
-
-        return false
-    }
-
-
-    fun addOverlay(overlay: OverlayItem) {
-        mOverlays.add(overlay)
-        populate()
-    }
 
 
 
@@ -63,7 +44,7 @@ class MapItemOverlay(val imageName: String, val context: Context, activity: Acti
         //there are a lot of settings, for dialog, check them all out!
 
 
-        val path = File(Environment.getExternalStorageDirectory().toString()+"/images/", imageName)
+        val path = File(Environment.getExternalStorageDirectory().toString()+"/images/", imageName+".jpg")
         val bitmap = BitmapFactory.decodeFile(path.absolutePath)
         val image = dialog.findViewById(R.id.map_imageView) as ImageView
         image.setImageBitmap(Bitmap.createScaledBitmap(bitmap, 200,200, false))
@@ -77,10 +58,6 @@ class MapItemOverlay(val imageName: String, val context: Context, activity: Acti
         return true
     }
 
-    // boolean onTap(GeoPoint p, MapView mapView)
-    // {
-    // return false;
-    // }
 
 
 

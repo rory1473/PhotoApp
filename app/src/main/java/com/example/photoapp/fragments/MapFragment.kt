@@ -75,10 +75,10 @@ class MapFragment : Fragment() {
 
                 val marker = ContextCompat.getDrawable(context!!, R.drawable.photo_marker)
                 //val itemOverlay =  MapItemOverlay(marker!!, context!!)
-                val photoLocation = OverlayItem("Photo", "Photo", GeoPoint(data.lat, data.long))
+                val photoLocation = OverlayItem("Photo", "Photo", GeoPoint(data.latitude.toDouble(), data.longitude.toDouble()))
                 //itemOverlay.addOverlay(photoLocation)
                 //mv.overlays.add(itemOverlay)
-                items = MapItemOverlay(data.image, context!!, activity!!, ArrayList<OverlayItem>(), markerGestureListener)
+                items = MapItemOverlay(data.image, context!!, activity!!, markerGestureListener)
                 //val curLocation = OverlayItem("gg", "gg", GeoPoint(50.909698, -1.404351))
                 //val drawable = ContextCompat.getDrawable(context!!, gg)
                 photoLocation.setMarker(marker)

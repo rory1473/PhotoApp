@@ -106,7 +106,7 @@ class MainActivity : AppCompatActivity(), LocationListener, ImageFragment.OnFrag
         Log.i("CCCCCCC", newPhoto)
         lifecycleScope.launch {
             var photoID: Long? = null
-            val newImage = Photo(image= newPhoto, album = 0, lat = lat, long = long)
+            val newImage = Photo(image= newPhoto, album = 0, latitude = lat.toString(), longitude = long.toString())
             withContext(Dispatchers.IO) {
                 photoID = db.photoDAO().insert(newImage)
             }
