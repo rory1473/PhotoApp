@@ -26,6 +26,11 @@ import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 
 import android.widget.ImageView
+import io.fotoapparat.configuration.CameraConfiguration
+import io.fotoapparat.selector.back
+import io.fotoapparat.selector.front
+import io.fotoapparat.selector.off
+import io.fotoapparat.selector.torch
 
 import java.io.File
 
@@ -33,22 +38,32 @@ import java.io.File
 class CameraFragment : Fragment() {
     private var listener: CameraFragmentListener? = null
     var fotoapparat: Fotoapparat? = null
-
+    var fotoapparatState : FotoapparatState? = null
+    var cameraStatus : CameraState? = null
+    var flashState: FlashState? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val fragView = inflater.inflate(R.layout.fragment_camera, container, false)
 
-        val take_photo = fragView.findViewById(R.id.take_photo) as FloatingActionButton
-
         val cameraView = fragView.findViewById<CameraView>(R.id.cameraView1)
-
         fotoapparat = Fotoapparat( context = context!!, view = cameraView)
 
-
-
-        take_photo.setOnClickListener {
+        val takePhoto = fragView.findViewById(R.id.take_photo) as FloatingActionButton
+        takePhoto.setOnClickListener {
             takePhoto()
         }
+        val flash = fragView.findViewById(R.id.flash) as FloatingActionButton
+        flash.setOnClickListener {
+            changeFlash()
+        }
+        val switchCamera = fragView.findViewById(R.id.switch_camera) as FloatingActionButton
+        switchCamera.setOnClickListener {
+            switchCamera()
+        }
+
+        cameraStatus = CameraState.BACK
+        flashState = FlashState.OFF
+        fotoapparatState = FotoapparatState.OFF
 
         return fragView
     }
@@ -83,6 +98,32 @@ class CameraFragment : Fragment() {
     }
 
 
+    private fun switchCamera(){
+        fotoapparat?.switchTo(
+            lensPosition =  if (cameraStatus == CameraState.BACK) front() else back(),
+            cameraConfiguration = CameraConfiguration()
+        )
+
+        if(cameraStatus == CameraState.BACK) {
+            cameraStatus = CameraState.FRONT
+        }
+        else {cameraStatus = CameraState.BACK
+        }
+    }
+
+
+    private fun changeFlash(){
+        fotoapparat?.updateConfiguration(
+            CameraConfiguration(
+                flashMode = if(flashState == FlashState.TORCH) off() else torch()
+            )
+        )
+
+        if(flashState == FlashState.TORCH) flashState = FlashState.OFF
+        else flashState = FlashState.TORCH
+    }
+
+
 
     override fun onStart() {
         super.onStart()
@@ -91,24 +132,21 @@ class CameraFragment : Fragment() {
     override fun onStop() {
         super.onStop()
         fotoapparat!!.stop()
+
     }
 
 
+    enum class CameraState{
+        FRONT, BACK
+    }
 
+    enum class FlashState{
+        TORCH, OFF
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+    enum class FotoapparatState{
+        ON, OFF
+    }
 
 
 

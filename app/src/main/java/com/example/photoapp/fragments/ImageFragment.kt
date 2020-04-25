@@ -41,14 +41,14 @@ class ImageFragment : Fragment(){
 
         val arg = arguments
         val getImage = arg!!.getString("image")
-        val getImageID = arg!!.getInt("imageID")
+        val getImageID = arg.getInt("imageID")
 
 
         val path = File(Environment.getExternalStorageDirectory().toString()+"/images/", getImage)
         val bitmap = BitmapFactory.decodeFile(path.absolutePath)
 
         val imageView = fragView.findViewById(R.id.imageFull) as ImageView
-        imageView.setImageBitmap(Bitmap.createScaledBitmap(bitmap, 200,200, false))
+        imageView.setImageBitmap(Bitmap.createScaledBitmap(bitmap, 600,1000, false))
 
 
 

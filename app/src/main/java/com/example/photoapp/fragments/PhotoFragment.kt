@@ -46,13 +46,10 @@ class PhotoFragment : Fragment(){
         allPhotos = arg!!.getBoolean("allPhotos")
 
         recyclerView =  fragView.findViewById(R.id.recyclerView) as RecyclerView
+        title =  fragView.findViewById(R.id.title) as TextView
 
-
-            title =  fragView.findViewById(R.id.title) as TextView
-
-
-        val btn1 = fragView.findViewById(R.id.btn1) as FloatingActionButton
-        btn1.setOnClickListener{
+        val cameraBtn = fragView.findViewById(R.id.camera_btn) as FloatingActionButton
+        cameraBtn.setOnClickListener{
             val transaction = activity!!.supportFragmentManager.beginTransaction()
             val fragment = CameraFragment.newInstance()
             transaction.replace(R.id.page_fragment, fragment)
@@ -82,7 +79,7 @@ class PhotoFragment : Fragment(){
                 imageList = it
 
                 Log.i("DDDDDD", imageList.toString())
-                val layoutManager = GridLayoutManager(context!!, 2)
+                val layoutManager = GridLayoutManager(context!!, 3)
                 recyclerView.layoutManager = layoutManager     //LinearLayoutManager(activity1)
                 val recyclerViewAdapter = PhotoRecyclerViewAdapter(context!!, imageList)
                 recyclerView.adapter = recyclerViewAdapter
@@ -114,7 +111,7 @@ class PhotoFragment : Fragment(){
                 imageList = it
 
                 Log.i("DDDDDD", imageList.toString())
-                val layoutManager = GridLayoutManager(context!!, 2)
+                val layoutManager = GridLayoutManager(context!!, 3)
                 recyclerView.layoutManager = layoutManager
                 val recyclerViewAdapter = PhotoRecyclerViewAdapter(context!!, imageList)
                 recyclerView.adapter = recyclerViewAdapter

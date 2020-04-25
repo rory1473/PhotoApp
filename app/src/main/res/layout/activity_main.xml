@@ -11,23 +11,14 @@
 
     <FrameLayout
             android:id="@+id/page_fragment"
-            android:layout_width="408dp"
-            android:layout_height="714dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/nav_view"
 
     />
 
-    <FrameLayout
-            android:id="@+id/full_screen_fragment"
-            android:layout_width="408dp"
-            android:layout_height="714dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-
-    />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/nav_view"

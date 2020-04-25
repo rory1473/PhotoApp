@@ -50,8 +50,6 @@
                 android:orientation="horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
-
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -59,34 +57,30 @@
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/add_album_btn"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     app:fabSize="normal"
                     android:src="@drawable/ic_add_black_50dp"
-                    android:layout_margin="32dp"
-                    app:backgroundTint="@android:color/white"
-
-
-            />
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginEnd="32dp"
+                    android:layout_marginBottom="85dp"
+                    app:backgroundTint="@android:color/white"/>
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/camera_btn"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     app:fabSize="normal"
                     android:src="@drawable/ic_camera_alt_black_50dp"
-                    android:layout_margin="32dp"
-                    app:backgroundTint="@android:color/white"
-
-
-            />
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginEnd="32dp"
+                    android:layout_marginBottom="85dp"
+                    app:backgroundTint="@android:color/white"/>
 
         </LinearLayout>
 
-
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 </FrameLayout>
