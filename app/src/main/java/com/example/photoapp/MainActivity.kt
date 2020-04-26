@@ -106,7 +106,7 @@ class MainActivity : AppCompatActivity(), LocationListener, ImageFragment.OnFrag
         Log.i("CCCCCCC", newPhoto)
         lifecycleScope.launch {
             var photoID: Long? = null
-            val newImage = Photo(image= newPhoto, album = -1, latitude = lat.toString(), longitude = long.toString())
+            val newImage = Photo(image= newPhoto, album = 999, latitude = lat.toString(), longitude = long.toString())
             withContext(Dispatchers.IO) {
                 photoID = db.photoDAO().insert(newImage)
             }
@@ -130,6 +130,11 @@ class MainActivity : AppCompatActivity(), LocationListener, ImageFragment.OnFrag
     override fun onStart() {
         super.onStart()
         getPermissions()
+    }
+
+    override fun onStop() {
+        super.onStop()
+
     }
 
 

@@ -8,7 +8,7 @@ import androidx.room.*
 interface PhotoDAO {
 
     @Query("SELECT * FROM images WHERE album=:album")
-    fun getImageByAlbum(album: Int): LiveData<List<Photo>>
+    fun getImageByAlbum(album: Int): List<Photo>
 
     @Query("SELECT * FROM images WHERE id=:id")
     fun getImageByID(id: Int): Photo?
@@ -35,6 +35,9 @@ interface PhotoDAO {
 
     @Query("SELECT * FROM albums")
     fun getAllAlbumsLive(): LiveData<List<Album>>
+
+    @Query("SELECT * FROM albums WHERE id=:id")
+    fun getAlbumByID(id: Int): Album?
 
     @Insert
     fun insertAlbum(albums: Album) : Long

@@ -26,6 +26,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.photoapp.R
 import com.example.photoapp.datahandling.Photo
 import com.example.photoapp.datahandling.PhotoDatabase
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -51,6 +52,9 @@ class MapFragment : Fragment() {
         val fragView = inflater.inflate(R.layout.fragment_map, container, false)
 
         Configuration.getInstance().load(activity, PreferenceManager.getDefaultSharedPreferences(activity))
+
+        val bottomNavigationView = activity!!.findViewById(R.id.nav_view) as BottomNavigationView
+        bottomNavigationView.visibility = View.VISIBLE
 
         val map = fragView.findViewById(R.id.map1) as MapView
         mv = map
@@ -140,13 +144,14 @@ class MapFragment : Fragment() {
 
                     val imageFragment = ImageFragment()
                     val args = Bundle()
-                    args.putString("image", item.snippet)
-                    args.putInt("imageID", item.uid.toInt())
+                    args.putString("image", item.snippet+".jpg")
+                    args.putInt("imageID", item.title.toInt())
                     imageFragment.arguments = args
                     val transaction = activity!!.supportFragmentManager.beginTransaction()
                     transaction.replace(R.id.page_fragment, imageFragment)
                     transaction.addToBackStack(null)
                     transaction.commit()
+                    dialog.dismiss()
                 }
 
                 dialog.show()

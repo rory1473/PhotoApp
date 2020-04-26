@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 
 import com.example.photoapp.R
 import com.example.photoapp.datahandling.PhotoDatabase
@@ -26,6 +27,7 @@ import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 
 import android.widget.ImageView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.fotoapparat.configuration.CameraConfiguration
 import io.fotoapparat.selector.back
 import io.fotoapparat.selector.front
@@ -45,18 +47,31 @@ class CameraFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val fragView = inflater.inflate(R.layout.fragment_camera, container, false)
 
+        val bottomNavigationView = activity!!.findViewById(R.id.nav_view) as BottomNavigationView
+        bottomNavigationView.visibility = View.INVISIBLE
+
+
         val cameraView = fragView.findViewById<CameraView>(R.id.cameraView1)
         fotoapparat = Fotoapparat( context = context!!, view = cameraView)
 
+        val backButton = fragView.findViewById(R.id.back_button) as FloatingActionButton
+        backButton.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.rotation))
+        backButton.setOnClickListener {
+            activity!!.supportFragmentManager.popBackStack()
+        }
+
         val takePhoto = fragView.findViewById(R.id.take_photo) as FloatingActionButton
+        takePhoto.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.rotation))
         takePhoto.setOnClickListener {
             takePhoto()
         }
         val flash = fragView.findViewById(R.id.flash) as FloatingActionButton
+        flash.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.rotation))
         flash.setOnClickListener {
             changeFlash()
         }
         val switchCamera = fragView.findViewById(R.id.switch_camera) as FloatingActionButton
+        switchCamera.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.rotation))
         switchCamera.setOnClickListener {
             switchCamera()
         }

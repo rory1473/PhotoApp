@@ -29,13 +29,15 @@ class PhotoRecyclerViewAdapter(private val c: Context, private val images: List<
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
 
+        
+
         val getImage = images[position].image+".jpg"
         val getID = images[position].id
 
         val path = File(Environment.getExternalStorageDirectory().toString()+"/images/", getImage)
 
         val bitmap = BitmapFactory.decodeFile(path.absolutePath)
-        bitmap.rotate(90.toFloat())
+
 
         //val bitmapCompress = bitmap
         //val stream = ByteArrayOutputStream()
@@ -74,10 +76,7 @@ class PhotoRecyclerViewAdapter(private val c: Context, private val images: List<
 
     }
 
-    fun Bitmap.rotate(degrees: Float): Bitmap {
-        val matrix = Matrix().apply { postRotate(degrees) }
-        return Bitmap.createBitmap(this, 0, 0, width, height, matrix, true)
-    }
+
 }
 
 

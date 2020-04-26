@@ -13,13 +13,13 @@ class ViewModel(app: Application): AndroidViewModel(app) {
     var db = PhotoDatabase.getDatabase(app)
     private var albums: LiveData<List<Album>>
     private var images: LiveData<List<Photo>>
-    private var imageByAlbum: LiveData<List<Photo>>
+   // private var imageByAlbum: LiveData<List<Photo>>
     private var id = 0
 
     init {
         albums = db.photoDAO().getAllAlbumsLive()
         images = db.photoDAO().getAllImagesLive()
-        imageByAlbum = db.photoDAO().getImageByAlbum(id)
+        //imageByAlbum = db.photoDAO().getImageByAlbum(id)
     }
 
     //fun insert(album: Album) {
@@ -35,8 +35,8 @@ class ViewModel(app: Application): AndroidViewModel(app) {
         return images
     }
 
-    fun getImageByAlbum(albumID: Int): LiveData<List<Photo>> {
-        id = albumID
-        return imageByAlbum
-    }
+    //fun getImageByAlbum(albumID: Int): LiveData<List<Photo>> {
+    //    id = albumID
+    //    return imageByAlbum
+    //}
 }

@@ -1,17 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content">
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/album_back_recycler"
+        android:id="@+id/singleAlbum">
 
     <TextView
             android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:textSize="32sp"
+            android:layout_margin="10dp"
+            android:textSize="36sp"
             android:textStyle="bold"
-            android:background="@drawable/album_back"
-            />
+            android:textColor="#A9A9A9"/>
 
-</LinearLayout>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/delete_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fabSize="normal"
+            android:src="@drawable/ic_delete_black_24dp"
+            android:layout_margin="10dp"
+            android:layout_alignParentRight="true"
+            app:backgroundTint="@android:color/white"/>
+
+</RelativeLayout>

@@ -14,16 +14,17 @@
     <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true">
 
         <Button
                 android:text="Cancel"
-                android:layout_width="170dp"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/cancel_btn"/>
         <Button
                 android:text="Add"
-                android:layout_width="170dp"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/add_btn"/>
     </LinearLayout>

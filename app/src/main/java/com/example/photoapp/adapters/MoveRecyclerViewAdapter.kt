@@ -29,15 +29,7 @@ class MoveRecyclerViewAdapter (private val imageID: Int, private val c: Context,
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-
-
-
-        return MyViewHolder(
-            LayoutInflater.from(c).inflate(
-                R.layout.single_move,
-                parent,
-                false
-            )
+        return MyViewHolder(LayoutInflater.from(c).inflate(R.layout.single_move, parent, false)
         )
     }
 
@@ -62,11 +54,6 @@ class MoveRecyclerViewAdapter (private val imageID: Int, private val c: Context,
                 }
                 Toast.makeText(holder.textView.context as FragmentActivity, "Image Moved to "+albums[position].name, Toast.LENGTH_LONG).show()
             }
-
-
-
-
-
 
         }
     }

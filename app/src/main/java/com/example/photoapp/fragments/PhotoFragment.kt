@@ -3,6 +3,7 @@ package com.example.photoapp.fragments
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -22,16 +23,21 @@ import com.example.photoapp.adapters.ViewModel
 import com.example.photoapp.datahandling.Album
 import com.example.photoapp.datahandling.Photo
 import com.example.photoapp.datahandling.PhotoDatabase
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-
+import android.widget.ProgressBar
+import kotlinx.android.synthetic.main.fragment_photo.*
 
 
 class PhotoFragment : Fragment(){
 
     private var listener: OnFragmentInteractionListener? = null
+    private val progressBar: ProgressBar? = null
+    private var progressStatus = 0
+    private val handler = Handler()
     private var imageList = listOf<Photo>()
     private lateinit var db: PhotoDatabase
     lateinit var recyclerView: RecyclerView
@@ -41,6 +47,41 @@ class PhotoFragment : Fragment(){
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val fragView = inflater.inflate(R.layout.fragment_photo, container, false)
+
+        val bottomNavigationView = activity!!.findViewById(R.id.nav_view) as BottomNavigationView
+        bottomNavigationView.visibility = View.VISIBLE
+
+        val progressBar = fragView.findViewById(R.id.progressBar) as ProgressBar
+        progressBar.visibility = View.INVISIBLE
+        Thread(Runnable{
+            run{
+                while (progressStatus < 50) {
+                    progressStatus += 1
+
+                    handler.post{
+                        run{
+                            progressBar.progress = progressStatus
+                        }
+                    }
+                    try {
+                        Thread.sleep(50)
+                    } catch (e: InterruptedException) {
+                        e.printStackTrace()
+                    }
+                    if(progressStatus == 49){
+                        if(progressBarCircle != null) {
+                        progressBarCircle.visibility = View.INVISIBLE
+                    }}
+
+                }
+        }}).start()
+
+
+
+        val backButton = fragView.findViewById(R.id.back_btn) as FloatingActionButton
+        backButton.setOnClickListener {
+            activity!!.supportFragmentManager.popBackStack()
+        }
 
         val arg = arguments
         allPhotos = arg!!.getBoolean("allPhotos")
@@ -73,30 +114,23 @@ class PhotoFragment : Fragment(){
         if (allPhotos) {
             title.text = "All Photos"
 
-            val viewModel = ViewModelProviders.of(activity!!).get(ViewModel::class.java)
 
-            viewModel.getAllImagesLive().observe(this, Observer<List<Photo>> {
-                imageList = it
+            lifecycleScope.launch {
+                withContext(Dispatchers.IO) {
+                    imageList = db.photoDAO().getAllImages()
+                }
 
                 Log.i("DDDDDD", imageList.toString())
                 val layoutManager = GridLayoutManager(context!!, 3)
                 recyclerView.layoutManager = layoutManager     //LinearLayoutManager(activity1)
                 val recyclerViewAdapter = PhotoRecyclerViewAdapter(context!!, imageList)
                 recyclerView.adapter = recyclerViewAdapter
+            }
+            //})
+            //val viewModel = ViewModelProviders.of(activity!!).get(ViewModel::class.java)
 
-            })
-
-            //lifecycleScope.launch {
-             //   withContext(Dispatchers.IO) {
-             //       imageList = db.photoDAO().getAllImages()
-             //   }
-
-             //   Log.i("DDDDDD", imageList.toString())
-              //  val layoutManager = GridLayoutManager(context!!, 2)
-              //  recyclerView.layoutManager = layoutManager     //LinearLayoutManager(activity1)
-              //  val recyclerViewAdapter = PhotoRecyclerViewAdapter(context!!, imageList)
-              //  recyclerView.adapter = recyclerViewAdapter
-
+            //viewModel.getAllImagesLive().observe(this, Observer<List<Photo>> {
+            //    imageList = it
 
 
        } else{
@@ -105,39 +139,22 @@ class PhotoFragment : Fragment(){
             val albumName = arg.getString("name")
             title.text = albumName
 
-            val viewModel = ViewModelProviders.of(activity!!).get(ViewModel::class.java)
-
-            viewModel.getImageByAlbum(albumID).observe(this, Observer<List<Photo>> {
-                imageList = it
-
+            lifecycleScope.launch {
+                withContext(Dispatchers.IO) {
+                    imageList = db.photoDAO().getImageByAlbum(albumID)
+                }
                 Log.i("DDDDDD", imageList.toString())
                 val layoutManager = GridLayoutManager(context!!, 3)
                 recyclerView.layoutManager = layoutManager
                 val recyclerViewAdapter = PhotoRecyclerViewAdapter(context!!, imageList)
                 recyclerView.adapter = recyclerViewAdapter
-
-        //    lifecycleScope.launch {
-        //        withContext(Dispatchers.IO) {
-        //            imageList = db.photoDAO().getImageByAlbum(albumID)
-         //       }
-//
-        //        Log.i("DDDDDD", imageList.toString())
-        //        val layoutManager = GridLayoutManager(context!!, 2)
-        //        recyclerView.layoutManager = layoutManager     //LinearLayoutManager(activity1)
-        //        val recyclerViewAdapter = PhotoRecyclerViewAdapter(context!!, imageList)
-        //        recyclerView.adapter = recyclerViewAdapter
-//
-         //   }
-        })
+            }
         }
+        //    val viewModel = ViewModelProviders.of(activity!!).get(ViewModel::class.java)
+                //viewModel.getImageByAlbum(albumID).observe(this, Observer<List<Photo>> {
+            //  imageList = it
 
     }
-
-
-    //fun getAlbum(photos: Boolean){
-       // allPhotos = photos
-    // }
-    //
 
 
 

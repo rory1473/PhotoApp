@@ -24,6 +24,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.photoapp.adapters.AlbumRecyclerViewAdapter
 import com.example.photoapp.adapters.ViewModel
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.add_album.view.*
 
 
@@ -38,6 +39,9 @@ class AlbumFragment() : Fragment(){
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val fragView = inflater.inflate(R.layout.fragment_album, container, false)
+
+        val bottomNavigationView = activity!!.findViewById(R.id.nav_view) as BottomNavigationView
+        bottomNavigationView.visibility = View.VISIBLE
 
         recyclerView =  fragView.findViewById(R.id.recyclerView) as RecyclerView
 
