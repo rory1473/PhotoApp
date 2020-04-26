@@ -10,7 +10,7 @@
 
 
     <io.fotoapparat.view.CameraView
-            android:id="@+id/cameraView1"
+            android:id="@+id/cameraView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_constraintTop_toTopOf="parent"

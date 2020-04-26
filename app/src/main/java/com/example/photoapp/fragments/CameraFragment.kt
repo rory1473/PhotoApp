@@ -38,44 +38,51 @@ import java.io.File
 
 
 class CameraFragment : Fragment() {
+    //declare class variables
+    private val TAG = "CameraFragment"
     private var listener: CameraFragmentListener? = null
-    var fotoapparat: Fotoapparat? = null
-    var fotoapparatState : FotoapparatState? = null
-    var cameraStatus : CameraState? = null
-    var flashState: FlashState? = null
+    private var fotoapparat: Fotoapparat? = null
+    private var fotoapparatState : FotoapparatState? = null
+    private var cameraStatus : CameraState? = null
+    private var flashState: FlashState? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val fragView = inflater.inflate(R.layout.fragment_camera, container, false)
-
+        //set bottom navigation as invisible
         val bottomNavigationView = activity!!.findViewById(R.id.nav_view) as BottomNavigationView
         bottomNavigationView.visibility = View.INVISIBLE
 
-
-        val cameraView = fragView.findViewById<CameraView>(R.id.cameraView1)
+        //define cameraView
+        val cameraView = fragView.findViewById<CameraView>(R.id.cameraView)
         fotoapparat = Fotoapparat( context = context!!, view = cameraView)
 
+        //back button returns to last fragment on stack
         val backButton = fragView.findViewById(R.id.back_button) as FloatingActionButton
         backButton.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.rotation))
         backButton.setOnClickListener {
             activity!!.supportFragmentManager.popBackStack()
+            backButton.isEnabled = false
         }
 
+        //button calls takePhoto()
         val takePhoto = fragView.findViewById(R.id.take_photo) as FloatingActionButton
         takePhoto.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.rotation))
         takePhoto.setOnClickListener {
             takePhoto()
         }
+        //button calls changeFlash()
         val flash = fragView.findViewById(R.id.flash) as FloatingActionButton
         flash.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.rotation))
         flash.setOnClickListener {
             changeFlash()
         }
+        //button calls switchCamera()
         val switchCamera = fragView.findViewById(R.id.switch_camera) as FloatingActionButton
         switchCamera.startAnimation(AnimationUtils.loadAnimation(activity, R.anim.rotation))
         switchCamera.setOnClickListener {
             switchCamera()
         }
-
+        //default values of camera properties
         cameraStatus = CameraState.BACK
         flashState = FlashState.OFF
         fotoapparatState = FotoapparatState.OFF
@@ -83,21 +90,15 @@ class CameraFragment : Fragment() {
         return fragView
     }
 
-
-
     private fun takePhoto(){
-
+        //takes photo and saves to file, filename is passed to through interface MainActivity to be saved to database
         val stringLibrary = ('a'..'z').toList().toTypedArray()
         val random = (1..6).map { stringLibrary.random() }.joinToString("")
-
         val filename = random+".jpg"
         val sd = Environment.getExternalStorageDirectory().toString()+"/images/"
         val dest = File(sd, filename)
 
         fotoapparat?.takePicture()?.saveToFile(dest)
-
-
-
 
         //val path = File(Environment.getExternalStorageDirectory(),"newPhoto.jpg").toString()
        // Log.i("BBBBBBB", path)
@@ -107,18 +108,17 @@ class CameraFragment : Fragment() {
         //val image = stream.toByteArray()
 
         listener?.photoInterface(random)
-        Log.i("AAAAAAA", random)
-
+        Log.i(TAG, random)
 
     }
 
 
     private fun switchCamera(){
+        //switches between front and back camera
         fotoapparat?.switchTo(
             lensPosition =  if (cameraStatus == CameraState.BACK) front() else back(),
             cameraConfiguration = CameraConfiguration()
         )
-
         if(cameraStatus == CameraState.BACK) {
             cameraStatus = CameraState.FRONT
         }
@@ -128,12 +128,12 @@ class CameraFragment : Fragment() {
 
 
     private fun changeFlash(){
+        //turns flash on and off
         fotoapparat?.updateConfiguration(
             CameraConfiguration(
                 flashMode = if(flashState == FlashState.TORCH) off() else torch()
             )
         )
-
         if(flashState == FlashState.TORCH) flashState = FlashState.OFF
         else flashState = FlashState.TORCH
     }
@@ -142,23 +142,24 @@ class CameraFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
+        //start fotoapparat
         fotoapparat!!.start()
     }
     override fun onStop() {
         super.onStop()
+        //stops fotoapparat on fragment close
         fotoapparat!!.stop()
 
     }
 
 
+    //set fotoapparat property options
     enum class CameraState{
         FRONT, BACK
     }
-
     enum class FlashState{
         TORCH, OFF
     }
-
     enum class FotoapparatState{
         ON, OFF
     }
@@ -181,14 +182,10 @@ class CameraFragment : Fragment() {
     }
 
 
-
-
     interface CameraFragmentListener {
-        fun photoInterface(newPhoto: String) //ByteArray
+        fun photoInterface(newPhoto: String)
 
     }
-
-
 
     companion object {
 

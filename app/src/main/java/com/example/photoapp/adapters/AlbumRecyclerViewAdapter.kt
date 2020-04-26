@@ -21,29 +21,26 @@ import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
 
-class AlbumRecyclerViewAdapter(private val c: Context, private val albums: List<Album>): CoroutineScope, RecyclerView.Adapter<AlbumRecyclerViewAdapter.MyViewHolder>(){
+class AlbumRecyclerViewAdapter(private val c: Context, private val albums: List<Album>) : CoroutineScope,
+    RecyclerView.Adapter<AlbumRecyclerViewAdapter.MyViewHolder>() {
+    //declare class variables
+    private val TAG = "AlbumRecycler"
     private var album: Album? = null
-    var job = Job()
+    private var job = Job()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        return MyViewHolder(
-            LayoutInflater.from(c).inflate(
-                R.layout.single_album,
-                parent,
-                false
-            )
-        )
+        return MyViewHolder(LayoutInflater.from(c).inflate(R.layout.single_album, parent, false))
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
 
         val getAlbum = albums[position].name
+        //set text view with album name and on click listener to display images in that album
         holder.textView.text = getAlbum
-        Log.i("Album", getAlbum)
-
-        holder.textView.setOnClickListener{
+        Log.i(TAG, getAlbum)
+        holder.textView.setOnClickListener {
             val photos = false
             val photoFragment = PhotoFragment()
             val args = Bundle()
@@ -54,49 +51,51 @@ class AlbumRecyclerViewAdapter(private val c: Context, private val albums: List<
             val transaction = (holder.itemView.context as FragmentActivity).supportFragmentManager.beginTransaction()
             transaction.replace(R.id.page_fragment, photoFragment)
             transaction.addToBackStack(null)
-            transaction.commit()}
+            transaction.commit()
+        }
 
+        //set delete button with dialog box to confirm
+        holder.deleteBtn.setOnClickListener {
+            val dialogView = LayoutInflater.from(c).inflate(R.layout.delete, null)
+            val builder = AlertDialog.Builder(c)
+                .setView(dialogView)
+                .setTitle("Delete Album?")
 
-        holder.deleteBtn.setOnClickListener{
-                val dialogView = LayoutInflater.from(c).inflate(R.layout.delete, null)
-                val builder = AlertDialog.Builder(c)
-                    .setView(dialogView)
-                    .setTitle("Delete Album?")
-
-                val alert = builder.show()
-                dialogView.yes_btn.setOnClickListener {
-                    alert.dismiss()
-                    val db = PhotoDatabase.getDatabase(holder.textView.context as FragmentActivity)
-
-                    launch {
-
-                        withContext(Dispatchers.IO) {
-                            album = db.photoDAO().getAlbumByID(albums[position].id)
-                        }
-                        var photoID: Int? = null
-                        withContext(Dispatchers.IO) {
-                            photoID = db.photoDAO().deleteAlbum(album!!)
-
-                        }
-                        Toast.makeText(holder.textView.context as FragmentActivity, "Album Deleted", Toast.LENGTH_LONG).show()
+            val alert = builder.show()
+            dialogView.yes_btn.setOnClickListener {
+                alert.dismiss()
+                val db = PhotoDatabase.getDatabase(holder.textView.context as FragmentActivity)
+                //coroutine reads album object from database and deletes it with delete query
+                launch {
+                    withContext(Dispatchers.IO) {
+                        album = db.photoDAO().getAlbumByID(albums[position].id)
                     }
+                    var photoID: Int? = null
+                    withContext(Dispatchers.IO) {
+                        if(album != null) {
+                            photoID = db.photoDAO().deleteAlbum(album!!)
+                        }
+                    }
+                    Toast.makeText(holder.textView.context as FragmentActivity, "Album Deleted", Toast.LENGTH_LONG)
+                        .show()
                 }
-                dialogView.no_btn.setOnClickListener {
-                    alert.dismiss()
-                }
+            }
+            //close dialog box
+            dialogView.no_btn.setOnClickListener {
+                alert.dismiss()
+            }
         }
     }
 
-
     override fun getItemCount(): Int {
+        //returns list size
         return albums.size
     }
 
-    class MyViewHolder(view: View): RecyclerView.ViewHolder(view) {
-
+    class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        //set views for view holder
         val textView = view.findViewById(R.id.textView) as TextView
         val deleteBtn = view.findViewById(R.id.delete_btn) as FloatingActionButton
     }
-
 
 }

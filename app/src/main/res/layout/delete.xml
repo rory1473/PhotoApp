@@ -6,12 +6,12 @@
               android:layout_centerHorizontal="true">
 
         <Button
-                android:text="No"
+                android:text="@string/no"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/no_btn"/>
         <Button
-                android:text="Yes"
+                android:text="@string/yes"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/yes_btn"/>

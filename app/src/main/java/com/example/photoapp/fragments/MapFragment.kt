@@ -39,26 +39,29 @@ import java.io.File
 
 
 class MapFragment : Fragment() {
-
+    //declare class variables
+    private val TAG = "MapFragment"
     private var listener: OnFragmentInteractionListener? = null
     lateinit var items: ItemizedIconOverlay<OverlayItem>
     lateinit var markerGestureListener: ItemizedIconOverlay.OnItemGestureListener<OverlayItem>
     lateinit var mv: MapView
     private var imageList = listOf<Photo>()
     private lateinit var db: PhotoDatabase
-    private var imageName = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val fragView = inflater.inflate(R.layout.fragment_map, container, false)
-
+        //configuration for OSMDroid
         Configuration.getInstance().load(activity, PreferenceManager.getDefaultSharedPreferences(activity))
 
+        //set bottom navigation as visible
         val bottomNavigationView = activity!!.findViewById(R.id.nav_view) as BottomNavigationView
         bottomNavigationView.visibility = View.VISIBLE
 
+        //define map view
         val map = fragView.findViewById(R.id.map1) as MapView
         mv = map
 
+        //call to set map and marker initialise functions
         markerInit()
         mapInit()
 
@@ -74,15 +77,14 @@ class MapFragment : Fragment() {
         //val icon = BitmapDrawable(resources, image)
         //icon.setBounds(0, 0, 0 + icon.intrinsicWidth, 0 + icon.intrinsicHeight)
         val activity1 = activity as Context
-
+        //read database for location of all photos
         db = PhotoDatabase.getDatabase(activity1)
         lifecycleScope.launch {
             withContext(Dispatchers.IO) {
                 imageList = db.photoDAO().getAllImages()
             }
-
+            //display each photo marker on map
             for (data in imageList) {
-
                 val marker = ContextCompat.getDrawable(context!!, R.drawable.photo_marker)
                 val photoLocation = OverlayItem(data.id.toString(), data.image, GeoPoint(data.latitude.toDouble(), data.longitude.toDouble()))
                 items = ItemizedIconOverlay<OverlayItem>(activity, ArrayList<OverlayItem>(), markerGestureListener)
@@ -91,7 +93,7 @@ class MapFragment : Fragment() {
                 mv.overlays.add(items)
             }
         }
-
+        //button takes you to camera fragment
         val cameraBtn = fragView.findViewById(R.id.camera_btn) as FloatingActionButton
         cameraBtn.setOnClickListener{
             val transaction = activity!!.supportFragmentManager.beginTransaction()
@@ -101,47 +103,45 @@ class MapFragment : Fragment() {
             transaction.commit()
 
         }
-
         return fragView
     }
 
     private fun mapInit(){
-
+        //set touch controls and default view
         mv.setMultiTouchControls(true)
-
         val mvController = mv.controller
         mvController.setZoom(10)
         mvController.setCenter(GeoPoint( 50.909698, -1.404351))
-
     }
 
 
     private fun markerInit() {
+        //on marker clicked actions
         markerGestureListener = object: ItemizedIconOverlay.OnItemGestureListener<OverlayItem> {
 
             override fun onItemLongPress(i: Int, item: OverlayItem): Boolean {
-
+                //show image name on long press
                 Toast.makeText(activity, item.snippet, Toast.LENGTH_SHORT).show()
+                Log.i(TAG, item.snippet+".jpg")
                 return true
             }
 
             override fun onItemSingleTapUp(i: Int, item: OverlayItem): Boolean {
+                //on short press display dialog box with image inside
+                Log.i(TAG, item.snippet+".jpg")
                 val dialog = Dialog(context!!)
                 dialog.window!!.requestFeature(Window.FEATURE_NO_TITLE)
                 dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
                 dialog.setContentView(R.layout.map_image)
                 dialog.setTitle("Selected Image")
-
                 dialog.setCancelable(true)
-
 
                 val path = File(Environment.getExternalStorageDirectory().toString()+"/images/", item.snippet+".jpg")
                 val bitmap = BitmapFactory.decodeFile(path.absolutePath)
                 val image = dialog.findViewById(R.id.map_imageView) as ImageView
                 image.setImageBitmap(Bitmap.createScaledBitmap(bitmap, 200,200, false))
-
                 image.setOnClickListener {
-
+                    //on image click display selected image in image fragment
                     val imageFragment = ImageFragment()
                     val args = Bundle()
                     args.putString("image", item.snippet+".jpg")
@@ -153,16 +153,10 @@ class MapFragment : Fragment() {
                     transaction.commit()
                     dialog.dismiss()
                 }
-
                 dialog.show()
-
-                Toast.makeText(activity, item.snippet, Toast.LENGTH_SHORT).show()
                 return true
             }
         }
-
-
-
     }
 
 

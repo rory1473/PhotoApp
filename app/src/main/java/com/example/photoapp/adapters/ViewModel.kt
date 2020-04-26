@@ -10,33 +10,25 @@ import com.example.photoapp.datahandling.PhotoDatabase
 
 class ViewModel(app: Application): AndroidViewModel(app) {
 
+    //declares variables
     var db = PhotoDatabase.getDatabase(app)
     private var albums: LiveData<List<Album>>
     private var images: LiveData<List<Photo>>
-   // private var imageByAlbum: LiveData<List<Photo>>
-    private var id = 0
 
     init {
+        //variables are assigned to DAO functions
         albums = db.photoDAO().getAllAlbumsLive()
         images = db.photoDAO().getAllImagesLive()
-        //imageByAlbum = db.photoDAO().getImageByAlbum(id)
     }
 
-    //fun insert(album: Album) {
-     //   db.photoDAO().insertAlbum(album)
-   // }
-
     fun getAllAlbumsLive(): LiveData<List<Album>> {
+        //function called by album fragment to return live album data
         return albums
     }
 
     fun getAllImagesLive(): LiveData<List<Photo>> {
-
         return images
     }
 
-    //fun getImageByAlbum(albumID: Int): LiveData<List<Photo>> {
-    //    id = albumID
-    //    return imageByAlbum
-    //}
+
 }

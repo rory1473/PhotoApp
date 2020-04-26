@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase
 @Database(entities = arrayOf(Photo::class , Album::class), version = 1, exportSchema = false)
 abstract class PhotoDatabase: RoomDatabase() {
     abstract fun photoDAO(): PhotoDAO
-
+    //builds room database with DAO and tables
     companion object {
         private var instance: PhotoDatabase? = null
 

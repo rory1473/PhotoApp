@@ -10,46 +10,51 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
+import android.view.LayoutInflater
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
 import com.example.photoapp.datahandling.Photo
 import com.example.photoapp.datahandling.PhotoDatabase
 import com.example.photoapp.fragments.*
+import kotlinx.android.synthetic.main.permission_required.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 
 class MainActivity : AppCompatActivity(), LocationListener, ImageFragment.OnFragmentInteractionListener, AlbumFragment.OnFragmentInteractionListener, MapFragment.OnFragmentInteractionListener, PhotoFragment.OnFragmentInteractionListener, CameraFragment.CameraFragmentListener  {
-
+    //declare class variables
+    private val TAG = "MainActivity"
     private val fm = supportFragmentManager
     private lateinit var db: PhotoDatabase
     var lat = 0.0
     var long = 0.0
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         supportActionBar!!.hide()
-        val navView: BottomNavigationView = findViewById(R.id.nav_view)
 
+        //set bottom navigation listener
+        val navView: BottomNavigationView = findViewById(R.id.nav_view)
+        navView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
+
+        //create file directory for photos
         val path = File(Environment.getExternalStorageDirectory().toString()+"/images")
         path.mkdirs()
 
-         db = PhotoDatabase.getDatabase(application)
-
-
-        navView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
+        //define database
+        db = PhotoDatabase.getDatabase(application)
 
         showAlbumFragment()
     }
 
 
-
     private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+        //set navigation fragment calls
         when (item.itemId) {
             R.id.navigation_photos -> {
                 showAlbumFragment()
@@ -59,87 +64,58 @@ class MainActivity : AppCompatActivity(), LocationListener, ImageFragment.OnFrag
                 showMapFragment()
                 return@OnNavigationItemSelectedListener true
             }
-
         }
         false
     }
 
 
-    private fun showPhotoFragment() {
-
-        val fragment = PhotoFragment.newInstance()
-        val transaction = fm.beginTransaction()
-        transaction.replace(R.id.page_fragment, fragment)
-        transaction.addToBackStack(null)
-        transaction.commit()
-
-    }
-
     private fun showMapFragment() {
+        //set fragment as MapFragment
         val transaction = fm.beginTransaction()
         val fragment = MapFragment.newInstance()
         transaction.replace(R.id.page_fragment, fragment)
         transaction.addToBackStack(null)
         transaction.commit()
-
     }
 
-    private fun showCameraFragment() {
-        val transaction = fm.beginTransaction()
-        val fragment = CameraFragment.newInstance()
-        transaction.replace(R.id.page_fragment, fragment)
-        transaction.addToBackStack(null)
-        transaction.commit()
-
-    }
 
     private fun showAlbumFragment() {
+        //set fragment as AlbumFragment
         val transaction = fm.beginTransaction()
         val fragment = AlbumFragment.newInstance()
         transaction.replace(R.id.page_fragment, fragment)
         transaction.addToBackStack(null)
         transaction.commit()
-
     }
 
     override fun photoInterface(newPhoto: String){
-        Log.i("CCCCCCC", newPhoto)
-        lifecycleScope.launch {
-            var photoID: Long? = null
-            val newImage = Photo(image= newPhoto, album = 999, latitude = lat.toString(), longitude = long.toString())
-            withContext(Dispatchers.IO) {
-                photoID = db.photoDAO().insert(newImage)
+        //read in photo filename from CameraFragment and insert to database with current location
+        if(newPhoto != null) {
+            Log.i(TAG, newPhoto)
+            lifecycleScope.launch {
+               var photoID: Long? = null
+               val newImage = Photo(image= newPhoto, album = -1, latitude = lat.toString(), longitude = long.toString())
+               withContext(Dispatchers.IO) {
+                   photoID = db.photoDAO().insert(newImage)
+               }
             }
-
         }
     }
 
-
+    //empty fragment interface required by main activity
     override fun onFragmentInteraction(uri: Uri) {
-
     }
-
-
-
-
-
-
-
 
 
     override fun onStart() {
         super.onStart()
+        //call getPermissions() on startup
         getPermissions()
-    }
-
-    override fun onStop() {
-        super.onStop()
-
     }
 
 
     private fun getPermissions(){
-
+        //check all permissions are granted and request location
         if(checkSelfPermission(Manifest.permission.CAMERA)== PackageManager.PERMISSION_GRANTED &&
             checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED &&
             checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED&&
@@ -148,20 +124,31 @@ class MainActivity : AppCompatActivity(), LocationListener, ImageFragment.OnFrag
             mgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0f, this)
         }
         else{
+            //request permissions
             requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE ), 0)
         }
     }
 
 
-
     override fun onRequestPermissionsResult(requestCode:Int, permissions:Array<String>, grantResults: IntArray) {
+        //if all permissions are granted call getPermissions, otherwise alert user and loop back to getPermissions until user grants permissions
         when(requestCode) {
             0 -> {
                 if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED && grantResults[3] == PackageManager.PERMISSION_GRANTED) {
                     getPermissions()
 
                 } else {
-                    Toast.makeText(this, "Camera, file read and file write permissions required to use this app", Toast.LENGTH_LONG).show()
+                    val dialogView = LayoutInflater.from(this).inflate(R.layout.permission_required, null)
+                    val builder = AlertDialog.Builder(this)
+                        .setView(dialogView)
+                        .setTitle("Permissions Needed")
+                        .setMessage("You have denied permissions that are required to use this app, to use the app please grant them")
+                        .setCancelable(false)
+                    val alert = builder.show()
+                    dialogView.ok_btn.setOnClickListener {
+                        alert.dismiss()
+                        getPermissions()
+                    }
                 }
             }
         }
@@ -170,8 +157,9 @@ class MainActivity : AppCompatActivity(), LocationListener, ImageFragment.OnFrag
 
 
     override fun onLocationChanged(newLoc: Location) {
-        Log.i("latitude", newLoc.latitude.toString())
-        Log.i("longitude", newLoc.longitude.toString())
+        //set class variables as current location
+        Log.i(TAG+" latitude", newLoc.latitude.toString())
+        Log.i(TAG+" longitude", newLoc.longitude.toString())
         lat = newLoc.latitude
         long = newLoc.longitude
     }

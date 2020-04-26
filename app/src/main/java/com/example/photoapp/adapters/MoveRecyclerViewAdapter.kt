@@ -22,8 +22,11 @@ import kotlinx.coroutines.Job
 
 
 class MoveRecyclerViewAdapter (private val imageID: Int, private val c: Context, private val albums: List<Album>): CoroutineScope, RecyclerView.Adapter<MoveRecyclerViewAdapter.MyViewHolder>() {
+    //declare class variables
+    private val TAG = "MoveRecycler"
     private var image: Photo? = null
-    var job = Job()
+    private var job = Job()
+    //define coroutine
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
@@ -34,37 +37,39 @@ class MoveRecyclerViewAdapter (private val imageID: Int, private val c: Context,
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-
+        //set album name as text view and on click listener to move album
         val getAlbum = albums[position].name
         holder.textView.text = getAlbum
-        Log.i("Album", getAlbum)
+        Log.i(TAG, getAlbum)
         val db = PhotoDatabase.getDatabase(holder.textView.context as FragmentActivity)
         holder.textView.setOnClickListener {
+            //coroutine retrieves the image object from the ID passed in
             launch {
-
                 withContext(Dispatchers.IO) {
                     image = db.photoDAO().getImageByID(imageID)
                 }
-                image!!.album = albums[position].id
-                var photoID: Int? = null
-
-                withContext(Dispatchers.IO) {
+                //checks if image exists and then sets the new album value and sends update query to database
+                if(image != null) {
+                    image!!.album = albums[position].id
+                    var photoID: Int? = null
+                    withContext(Dispatchers.IO) {
                     photoID = db.photoDAO().update(image!!)
 
-                }
+                    }
                 Toast.makeText(holder.textView.context as FragmentActivity, "Image Moved to "+albums[position].name, Toast.LENGTH_LONG).show()
-            }
+            }}
 
         }
     }
 
 
     override fun getItemCount(): Int {
+        //get list size
         return albums.size
     }
 
     class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-
+        //set views to be held in view holder
         val textView = view.findViewById(R.id.textView) as TextView
 
     }

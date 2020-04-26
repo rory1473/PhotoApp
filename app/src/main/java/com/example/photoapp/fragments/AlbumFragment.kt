@@ -28,23 +28,23 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.add_album.view.*
 
 
-class AlbumFragment() : Fragment(){
-
+class AlbumFragment : Fragment(){
+    //declare class variables
+    private val TAG = "AlbumFragment"
     private var listener: OnFragmentInteractionListener? = null
     private var albumList = listOf<Album>()
     private lateinit var db: PhotoDatabase
     lateinit var recyclerView: RecyclerView
 
-
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val fragView = inflater.inflate(R.layout.fragment_album, container, false)
-
+        //set bottom navigation as visible
         val bottomNavigationView = activity!!.findViewById(R.id.nav_view) as BottomNavigationView
         bottomNavigationView.visibility = View.VISIBLE
 
         recyclerView =  fragView.findViewById(R.id.recyclerView) as RecyclerView
 
+        //button to show all photos in PhotoFragment
         val allPhotos = fragView.findViewById(R.id.all_albums) as TextView
         allPhotos.setOnClickListener {
             val photos = true
@@ -58,13 +58,7 @@ class AlbumFragment() : Fragment(){
             transaction.commit()
         }
 
-
-
-
-
-
-
-
+        //add album button dialog box asks user to enter a name
         val addBtn = fragView.findViewById(R.id.add_album_btn) as FloatingActionButton
         addBtn.setOnClickListener{
             val dialogView = LayoutInflater.from(context!!).inflate(R.layout.add_album, null)
@@ -73,27 +67,29 @@ class AlbumFragment() : Fragment(){
                 .setTitle("Add An Album")
 
             val alert = builder.show()
+            //if text box is not empty new album is inserted into database
             dialogView.add_btn.setOnClickListener {
-                alert.dismiss()
                 val album = dialogView.album_name.text.toString()
-
-                lifecycleScope.launch {
-                    var albumID: Long? = null
-                    val newAlbum = Album(name= album)
-                    withContext(Dispatchers.IO) {
-                        albumID = db.photoDAO().insertAlbum(newAlbum)
+                if (album.isEmpty()) {
+                    dialogView.album_name.error = "Please Enter The Album Name"
+                } else {
+                    lifecycleScope.launch {
+                        var albumID: Long? = null
+                        val newAlbum = Album(name = album)
+                        withContext(Dispatchers.IO) {
+                            albumID = db.photoDAO().insertAlbum(newAlbum)
+                        }
                     }
-
+                    alert.dismiss()
                 }
             }
+            //close add album dialog
             dialogView.cancel_btn.setOnClickListener {
                 alert.dismiss()
             }
-
         }
 
-
-
+        //button to take user to CameraFragment
         val cameraBtn = fragView.findViewById(R.id.camera_btn) as FloatingActionButton
         cameraBtn.setOnClickListener{
             val transaction = activity!!.supportFragmentManager.beginTransaction()
@@ -103,38 +99,26 @@ class AlbumFragment() : Fragment(){
             transaction.commit()
 
         }
-
         return fragView
     }
 
 
-
-
     override fun onActivityCreated(savedInstanceState: Bundle?){
         super.onActivityCreated(savedInstanceState)
-
         val activity1 = activity as Context
-
         db = PhotoDatabase.getDatabase(activity1)
 
+        //define view model
         val viewModel = ViewModelProviders.of(activity!!).get(ViewModel::class.java)
-
+        //read live data of albums in view model
         viewModel.getAllAlbumsLive().observe(this, Observer<List<Album>> {
             albumList = it
-
-            Log.i("DDDDDD",albumList.toString())
+            //send list of albums to recycler adapter
+            Log.i(TAG, albumList.toString())
             recyclerView.layoutManager = LinearLayoutManager(activity1)
             val recyclerViewAdapter = AlbumRecyclerViewAdapter(context!!, albumList)
             recyclerView.adapter = recyclerViewAdapter
         })
-
-
-        //lifecycleScope.launch {
-        //    withContext(Dispatchers.IO) {
-        //        albumList = db.photoDAO().getAllAlbums()
-        //    }
-        //}
-
     }
 
 
