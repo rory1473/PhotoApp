@@ -98,6 +98,7 @@ class MainActivity : AppCompatActivity(), LocationListener, ImageFragment.OnFrag
                withContext(Dispatchers.IO) {
                    photoID = db.photoDAO().insert(newImage)
                }
+               Log.i(TAG, photoID.toString())
             }
         }
     }

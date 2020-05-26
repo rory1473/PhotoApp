@@ -114,7 +114,7 @@ class PhotoFragment : Fragment(){
                 }
                 Log.i(TAG, imageList.toString())
                 val layoutManager = GridLayoutManager(context!!, 3)
-                recyclerView.layoutManager = layoutManager     //LinearLayoutManager(activity1)
+                recyclerView.layoutManager = layoutManager
                 val recyclerViewAdapter = PhotoRecyclerViewAdapter(context!!, imageList)
                 recyclerView.adapter = recyclerViewAdapter
             }

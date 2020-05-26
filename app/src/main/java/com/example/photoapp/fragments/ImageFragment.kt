@@ -113,6 +113,7 @@ class ImageFragment : Fragment(){
                     withContext(Dispatchers.IO) {
                         photoID = db.photoDAO().delete(image!!)
                     }
+                    Log.i(TAG, photoID.toString())
                     activity!!.supportFragmentManager.popBackStack()
                     Toast.makeText(activity, "Image Deleted", Toast.LENGTH_LONG).show()
                     //image is deleted from file directory

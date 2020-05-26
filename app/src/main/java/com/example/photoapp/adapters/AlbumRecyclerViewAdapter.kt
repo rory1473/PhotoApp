@@ -75,6 +75,7 @@ class AlbumRecyclerViewAdapter(private val c: Context, private val albums: List<
                         if(album != null) {
                             photoID = db.photoDAO().deleteAlbum(album!!)
                         }
+                        Log.i(TAG, photoID.toString())
                     }
                     Toast.makeText(holder.textView.context as FragmentActivity, "Album Deleted", Toast.LENGTH_LONG)
                         .show()

@@ -76,6 +76,7 @@ class MapFragment : Fragment() {
         //Bitmap.createScaledBitmap(image, 1,1, false)
         //val icon = BitmapDrawable(resources, image)
         //icon.setBounds(0, 0, 0 + icon.intrinsicWidth, 0 + icon.intrinsicHeight)
+
         val activity1 = activity as Context
         //read database for location of all photos
         db = PhotoDatabase.getDatabase(activity1)

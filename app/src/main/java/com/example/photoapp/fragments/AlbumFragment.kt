@@ -79,6 +79,7 @@ class AlbumFragment : Fragment(){
                         withContext(Dispatchers.IO) {
                             albumID = db.photoDAO().insertAlbum(newAlbum)
                         }
+                        Log.i(TAG, albumID.toString())
                     }
                     alert.dismiss()
                 }

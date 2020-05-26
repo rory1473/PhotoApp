@@ -54,8 +54,8 @@ class MoveRecyclerViewAdapter (private val imageID: Int, private val c: Context,
                     var photoID: Int? = null
                     withContext(Dispatchers.IO) {
                     photoID = db.photoDAO().update(image!!)
-
                     }
+                    Log.i(TAG, photoID.toString())
                 Toast.makeText(holder.textView.context as FragmentActivity, "Image Moved to "+albums[position].name, Toast.LENGTH_LONG).show()
             }}
 

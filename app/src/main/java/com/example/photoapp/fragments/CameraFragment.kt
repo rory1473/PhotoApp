@@ -1,10 +1,6 @@
 package com.example.photoapp.fragments
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.drawable.BitmapDrawable
-import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
@@ -13,27 +9,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-
 import com.example.photoapp.R
-import com.example.photoapp.datahandling.PhotoDatabase
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.fotoapparat.Fotoapparat
-import io.fotoapparat.result.BitmapPhoto
 import io.fotoapparat.view.CameraView
-import kotlinx.android.synthetic.main.fragment_camera.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.io.ByteArrayOutputStream
-
-import android.widget.ImageView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.fotoapparat.configuration.CameraConfiguration
 import io.fotoapparat.selector.back
 import io.fotoapparat.selector.front
 import io.fotoapparat.selector.off
 import io.fotoapparat.selector.torch
-
 import java.io.File
 
 
@@ -101,9 +86,9 @@ class CameraFragment : Fragment() {
         fotoapparat?.takePicture()?.saveToFile(dest)
 
         //val path = File(Environment.getExternalStorageDirectory(),"newPhoto.jpg").toString()
-       // Log.i("BBBBBBB", path)
-       // val bitmap = BitmapFactory.decodeFile(path)
-        //val stream = ByteArrayOutputStream()
+        //Log.i("BBBBBBB", path)
+        //val bitmap = BitmapFactory.decodeFile(path)
+       // val stream = ByteArrayOutputStream()
         //bitmap.compress(Bitmap.CompressFormat.JPEG, 20, stream)
         //val image = stream.toByteArray()
 
